@@ -1,0 +1,80 @@
+<!-- src/app/shifts/add-edit-shift.component.html -->
+
+<div class="container">
+  <h2>{{ pageTitle }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label>
+      Date
+      <input type="date" formControlName="date" />
+      <span class="error-message" *ngIf="date?.touched && date?.hasError('required')"
+>
+        Please select a date.
+      </span>
+    </label>
+
+    <label>
+      Start Time
+      <input type="time" formControlName="startTime" />
+    </label>
+
+    <label>
+      End Time
+      <input type="time" formControlName="endTime" />
+      <span class="error-message"
+            *ngIf="form.touched && form.hasError('timeOrder')">
+        End must be after start.
+      </span>
+    </label>
+
+    <label>
+      Hourly Wage ($)
+      <input type="number" formControlName="hourlyWage" step="0.01" />
+      <span class="error-message"
+            *ngIf="hourlyWage?.touched && hourlyWage?.hasError('min')">
+        Hourly wage must be > 0.
+      </span>
+    </label>
+
+    <label>
+      Workplace
+      <select formControlName="place">
+        <option value="">Select…</option>
+        <option value="Office">Office</option>
+        <option value="Warehouse">Warehouse</option>
+        <option value="Remote">Remote</option>
+      </select>
+      <span class="error-message"
+            *ngIf="place?.touched && place?.hasError('required')">
+        Select a workplace.
+      </span>
+    </label>
+
+    <label>
+      Shift Slug (unique)
+      <input type="text" formControlName="slug" />
+      <span class="error-message"
+            *ngIf="slug?.touched && slug?.hasError('slugTaken')">
+        Slug is required.
+      </span>
+      <span class="error-message"
+            *ngIf="slug?.touched && slug?.hasError('slugTaken')">
+        Slug already exists. Choose another.
+      </span>
+    </label>
+
+    <label>
+      Comments
+      <textarea rows="3" formControlName="comments"></textarea>
+    </label>
+
+    <div class="form-buttons">
+      <button type="submit">{{ saveBtnText }}</button>
+      <button type="button" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<div class="spinner-overlay" *ngIf="spinnerVisible">
+  <div class="spinner"></div>
+</div>

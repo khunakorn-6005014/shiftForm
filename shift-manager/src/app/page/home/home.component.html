@@ -1,0 +1,155 @@
+<!-- src/app/home/home.component.html -->
+
+
+<!-- Sidebar -->
+<div
+  id="mySidebar"
+  class="sidebar"
+  [style.width.px]="sidebarOpen ? 250 : 0"
+>
+  <a class="closebtn" (click)="closeNav()">×</a>
+
+  <!-- Primary app links -->
+  <a routerLink="/" (click)="closeNav()">Home</a>
+  <a routerLink="/profile" (click)="closeNav()">Profile</a>
+  <a routerLink="/add_edit_shift" (click)="closeNav()">Shifts</a>
+  <a href="#" (click)="logout()">Logout</a>
+
+  <hr>
+
+  <!-- Additional -->
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">Contact</a>
+</div>
+
+<!-- Main content container -->
+<div
+  id="main"
+  [style.marginLeft.px]="sidebarOpen ? 250 : 0"
+>
+  <header>
+    <span class="openbtn" (click)="openNav()">☰</span>
+    <nav>
+      <ul>
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >Home</a>
+        </li>
+        <li>
+          <a routerLink="/profile" routerLinkActive="active">Profile</a>
+        </li>
+        <li>
+          <a routerLink="/add_edit_shift" routerLinkActive="active">Shifts</a>
+        </li>
+        <li>
+          <a href="#" (click)="logout()">Logout</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Welcome to Your Dashboard</h1>
+    <h2>{{ welcomeMsg }}</h2>
+    <p>Select an option from the menu to begin.</p>
+
+    <!-- Filters -->
+    <section class="filters">
+      <div class="filter-item">
+        <label for="filterSlug">Shift Slug:</label>
+        <div class="input-wrapper">
+          <input
+            id="filterSlug"
+            type="text"
+            [(ngModel)]="filters.slug"
+            (ngModelChange)="applyFilters()"
+            placeholder="Search by shift slug…"
+          />
+          <span
+            class="clear-field"
+            *ngIf="filters.slug"
+            (click)="filters.slug=''; applyFilters()"
+          >×</span>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <label for="filterFrom">From Date:</label>
+        <input
+          id="filterFrom"
+          type="date"
+          [(ngModel)]="filters.from"
+          (change)="applyFilters()"
+        />
+      </div>
+
+      <div class="filter-item">
+        <label for="filterTo">To Date:</label>
+        <input
+          id="filterTo"
+          type="date"
+          [(ngModel)]="filters.to"
+          (change)="applyFilters()"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <button (click)="applyFilters()">Apply Filters</button>
+        <button (click)="clearFilters()">Clear Filters</button>
+      </div>
+    </section>
+
+    <!-- Shifts Table -->
+    <section class="shifts-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Slug</th>
+            <th>Date</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Wage</th>
+            <th>Place</th>
+            <th>Profit</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let s of filteredShifts"
+            (click)="onRowClick(s)"
+            class="clickable-row"
+          >
+            <td>{{ s.slug }}</td>
+            <td>{{ s.date }}</td>
+            <td>{{ s.startTime }}</td>
+            <td>{{ s.endTime }}</td>
+            <td>{{ s.hourlyWage | currency }}</td>
+            <td>{{ s.place }}</td>
+            <td>
+              {{ calcProfit(s.startTime, s.endTime, s.hourlyWage) | number:'1.2-2' }}
+            </td>
+            <td>
+              <button (click)="onEdit(s,$event)">Edit</button>
+              <button (click)="onDelete(s,$event)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Summary -->
+    <section class="summary">
+      <p>{{ bestMonthText }}</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Author: kim and khuna</p>
+  </footer>
+</div>
