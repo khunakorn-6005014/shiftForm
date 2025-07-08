@@ -1,0 +1,61 @@
+<div class="filters">
+  <input
+    type="text"
+    placeholder="Worker Name"
+    [(ngModel)]="filters.name"
+    (ngModelChange)="applyFilters()"
+  />
+
+  <input
+    type="text"
+    placeholder="Shift Place"
+    [(ngModel)]="filters.place"
+    (ngModelChange)="applyFilters()"
+  />
+
+  <input
+    type="date"
+    [(ngModel)]="filters.from"
+    (ngModelChange)="applyFilters()"
+  />
+
+  <input
+    type="date"
+    [(ngModel)]="filters.to"
+    (ngModelChange)="applyFilters()"
+  />
+
+  <button (click)="applyFilters()">Search</button>
+  <button (click)="clearFilters()">Reset</button>
+</div>
+
+<section class="shifts-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Worker Name</th>
+        <th>Date</th>
+        <th>Beginning Time</th>
+        <th>End Time</th>
+        <th>Price per Hour</th>
+        <th>Shift Place</th>
+        <th>Total Profit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let s of filteredShifts"
+        (click)="onRowClick(s)"
+        class="clickable-row"
+      >
+        <td>{{ s.user }}</td>
+        <td>{{ s.date }}</td>
+        <td>{{ s.startTime }}</td>
+        <td>{{ s.endTime }}</td>
+        <td>{{ s.hourlyWage | currency }}</td>
+        <td>{{ s.place }}</td>
+        <td>{{ calcProfit(s) | number:'1.2-2' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

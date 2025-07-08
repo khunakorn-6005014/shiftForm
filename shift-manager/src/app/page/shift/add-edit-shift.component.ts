@@ -93,11 +93,19 @@ get comments()    { return this.form.get('comments'); }
       this.form.markAllAsTouched();
       return;
     }
+     // 1) parse out the username
+    const raw = localStorage.getItem('loggedInUser');
+    const currentUser = raw 
+       ? JSON.parse(raw) 
+       : { username: 'unknown' };
 
+
+
+    // 2) build the shift
     const shift: Shift = {
-      user: localStorage.getItem('loggedInUser') || 'unknown',
-      ...this.form.value
-    };
+      user: currentUser.username,
+       ...this.form.value
+     };
 
     this.spinnerVisible = true;
     setTimeout(() => {
