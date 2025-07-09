@@ -1,9 +1,10 @@
 import { Component, OnInit }                 from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router, ActivatedRoute }            from '@angular/router';
+//import { Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { RouterModule,Router, ActivatedRoute }            from '@angular/router';
 import { CommonModule }                      from '@angular/common';
-import { ReactiveFormsModule }               from '@angular/forms';
+import { FormsModule }              from '@angular/forms'
 
+//
 interface Shift {
   user: string;
   date: string;
@@ -18,137 +19,128 @@ interface Shift {
 @Component({
   selector: 'app-add-edit-shift',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './add-edit-shift.component.html',
-  styleUrls: ['./add-edit-shift.component.scss']
+  styleUrls: ['./add-edit-shift.component.css']
 })
 export class AddEditShiftComponent implements OnInit {
-  get date()        { return this.form.get('date'); }
-get startTime()   { return this.form.get('startTime'); }
-get endTime()     { return this.form.get('endTime'); }
-get hourlyWage()  { return this.form.get('hourlyWage'); }
-get place()       { return this.form.get('place'); }
-get slug()        { return this.form.get('slug'); }
-get comments()    { return this.form.get('comments'); }
+   // Form fields
+  date        = '';
+  startTime   = '';
+  endTime     = '';
+  hourlyWage!: number;
+  place       = '';
+  slug        = '';
+  comments    = '';
 
-  form!: FormGroup;
+  //form!: FormGroup;
   isEditMode = false;
   originalSlug: string | null = null;
-  spinnerVisible = false;
+  
+  showSpinner = false;
+  // Error messages
+  dateError  = '';
+  timeError  = '';
+  wageError  = '';
+  placeError = '';
+  slugError  = '';
 
-  pageTitle = 'Add Shift';
-  saveBtnText = 'Save Shift';
 
-  private STORAGE_KEY = 'shifts';
+  STORAGE_KEY = 'shifts';
 
-  constructor(
-    private fb: FormBuilder,
+   constructor(
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
-  ngOnInit() {
-    this.buildForm();
-    const slug = this.route.snapshot.queryParamMap.get('slug');
-    if (slug) {
-      this.enterEditMode(slug);
+  ngOnInit(): void {
+    const slugParam = this.route.snapshot.queryParamMap.get('slug');
+    const shifts = this.loadShifts();
+
+    if (slugParam) {
+      const shift = shifts.find(s => s.slug === slugParam);
+      if (shift) {
+        this.isEditMode = true;
+        this.originalSlug = slugParam;
+        // pre-fill fields
+        this.date = shift.date;
+        this.startTime = shift.startTime;
+        this.endTime = shift.endTime;
+        this.hourlyWage = +shift.hourlyWage;
+        this.place = shift.place;
+        this.slug = shift.slug;
+        this.comments = shift.comments;
+      }
     }
   }
 
-  private buildForm() {
-    this.form = this.fb.group({
-      date: ['', Validators.required],
-      startTime: ['', Validators.required],
-      endTime: ['', Validators.required],
-      hourlyWage: [null, [Validators.required, Validators.min(0.01)]],
-      place: ['', Validators.required],
-      slug: ['', {
-        validators: [Validators.required],
-        asyncValidators: [this.slugUniqueValidator.bind(this)],
-        updateOn: 'blur'
-      }],
-      comments: ['']
-    }, {
-      validators: [this.timeOrderValidator]
-    });
+  loadShifts(): any[] {
+    const json = localStorage.getItem(this.STORAGE_KEY);
+    return json ? JSON.parse(json) : [];
   }
 
-  private enterEditMode(slug: string) {
+  saveShifts(arr: any[]): void {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(arr));
+  }
+ // real-time time validation
+  validateTime(): void {
+    this.timeError = '';
+    if (this.startTime && this.endTime && this.endTime <= this.startTime) {
+      this.timeError = 'End must be after start.';
+    }
+  }
+  // slug uniqueness check
+  validateSlug(): void {
     const shifts = this.loadShifts();
-    const shift = shifts.find(s => s.slug === slug);
-    if (!shift) return;
-    this.isEditMode = true;
-    this.originalSlug = slug;
-    this.pageTitle  = 'Edit Shift';
-    this.saveBtnText = 'Update Shift';
-    this.form.patchValue(shift);
+    const trimmed = this.slug.trim();
+    const clash = shifts.some(s => s.slug === trimmed && trimmed !== this.originalSlug);
+    this.slugError = trimmed ? (clash ? 'Slug already exists. Choose another.' : '') : 'Slug is required.';
   }
 
-  onCancel() {
-    this.router.navigate(['/']);
-  }
+  onSubmit(): void {
+    this.dateError = this.date ? '' : 'Please select a date.';
+    this.validateTime();
+    this.wageError = !this.hourlyWage || this.hourlyWage <= 0 ? 'Hourly wage must be > 0.' : '';
+    this.placeError = this.place ? '' : 'Select a workplace.';
+    this.validateSlug();
 
-  onSubmit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.dateError || this.timeError || this.wageError || this.placeError || this.slugError) {
       return;
     }
-     // 1) parse out the username
-    const raw = localStorage.getItem('loggedInUser');
-    const currentUser = raw 
-       ? JSON.parse(raw) 
-       : { username: 'unknown' };
+       // build object
+    const rawUser = localStorage.getItem('loggedInUser') || '';
+    const user = rawUser ? JSON.parse(rawUser) : { username: 'unknown' };
 
 
+    const shift = {
+      user: user.username,
+      date: this.date,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      hourlyWage: this.hourlyWage,
+      place: this.place,
+      slug: this.slug.trim(),
+      comments: this.comments.trim()
+    };
 
-    // 2) build the shift
-    const shift: Shift = {
-      user: currentUser.username,
-       ...this.form.value
-     };
+    this.showSpinner = true;
 
-    this.spinnerVisible = true;
     setTimeout(() => {
       let shifts = this.loadShifts();
-      if (this.isEditMode && this.originalSlug) {
+      if (this.isEditMode) {
         shifts = shifts.map(s => s.slug === this.originalSlug ? shift : s);
       } else {
         shifts.push(shift);
       }
       this.saveShifts(shifts);
-      this.spinnerVisible = false;
-      this.router.navigate(['/']);
+      this.showSpinner = false;
+      this.router.navigate(['/home']);
     }, 500);
   }
 
-  // -------------- Helpers --------------
-
-  private loadShifts(): Shift[] {
-    const json = localStorage.getItem(this.STORAGE_KEY);
-    return json ? JSON.parse(json) : [];
-  }
-
-  private saveShifts(arr: Shift[]) {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(arr));
-  }
-
-  private timeOrderValidator(group: AbstractControl): ValidationErrors | null {
-    const start = group.get('startTime')?.value;
-    const end   = group.get('endTime')?.value;
-    if (start && end && end <= start) {
-      return { timeOrder: 'End must be after Start' };
-    }
-    return null;
-  }
-
-  private slugUniqueValidator(control: AbstractControl) {
-    return new Promise<ValidationErrors | null>(resolve => {
-      const val = control.value as string;
-      const shifts = this.loadShifts();
-      const clash = shifts.some(s =>
-        s.slug === val && val !== this.originalSlug
-      );
-      resolve(clash ? { slugTaken: true } : null);
-    });
+  cancel(): void {
+    this.router.navigate(['/home']);
   }
 }
+
+  

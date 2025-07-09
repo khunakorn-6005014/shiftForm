@@ -1,26 +1,44 @@
-<h2>All Workers</h2>
+<!-- src/app/admin/all-workers/all-workers.component.html -->
 
-<table class="workers-table">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Username</th>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Birth Date</th>
-      <th>Edit</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let w of workers">
-      <td>{{ w.email }}</td>
-      <td>{{ w.username }}</td>
-      <td>{{ w.firstName }}</td>
-      <td>{{ w.lastName }}</td>
-      <td>{{ w.birthday | date:'mediumDate' }}</td>
-      <td>
-        <button (click)="editWorker(w.username)">Edit</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<header class="admin-header">
+   <div class="logo-container">
+            <img src="assets/logo.png" alt="App Logo" class="logo" />
+        </div>
+   <nav>
+    <ul>
+      <li><a routerLink="/admin" routerLinkActive="active">Home</a></li>
+      <li><a routerLink="/admin/shifts" routerLinkActive="active">All Shifts</a></li>
+      <li><a routerLink="/admin/workers" routerLinkActive="active">All Workers</a></li>
+      <span class="spacer"></span>
+      <li><a href="#" (click)="logout()">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="content">
+  <h2>All Workers</h2>
+  <table class="workers-table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Username</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Birth Date</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let w of workers">
+        <td>{{ w.email }}</td>
+        <td>{{ w.username }}</td>
+        <td>{{ w.firstName }}</td>
+        <td>{{ w.lastName }}</td>
+        <td>{{ w.birthday | date:'mediumDate' }}</td>
+        <td>
+          <button (click)="editWorker(w.username)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</main>

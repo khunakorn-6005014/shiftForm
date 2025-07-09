@@ -1,80 +1,58 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule }      from '@angular/common';    // ngIf, ngFor, currency pipe
-import { FormsModule }       from '@angular/forms';     // ngModel
-import { RouterModule }      from '@angular/router';    // routerLink, routerLinkActive
-
-
-
-interface Shift {
-  slug: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  hourlyWage: number;
-  place: string;
-}
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; 
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule
-  ],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-  shifts: Shift[] = [];
-  filteredShifts: Shift[] = [];
-  filters = { slug: '', from: '', to: '' };
-  bestMonthText = '';
-  welcomeMsg = '';
-  sidebarOpen = false;
+  shifts: any[] = [];
+  bestMonth: string = 'Loading best month…';
+  slugFilter: string = '';
+  fromDate: string = '';
+  toDate: string = '';
 
-  constructor(private router: Router) {}
 
-  ngOnInit(): void {
-    this.showGreeting();
-    this.loadShifts();
+  ngOnInit() {
+    const loggedIn = localStorage.getItem('loggedInUser');
+    if (!loggedIn) {
+      this.router.navigate(['/login']);
+    }
     this.applyFilters();
   }
 
-  // Sidebar toggle
+  constructor(private router: Router) {}
 
-  openNav()  { this.sidebarOpen = true; }
-  closeNav() { this.sidebarOpen = false; }
-  // …
+  // openNav() {
+  //   const sidebar = document.getElementById("mySidebar")!;
+  //   const main = document.getElementById("main")!;
+  //   sidebar.style.width = "250px";
+  //   main.style.marginLeft = "250px";
+  // }
 
-  // Greeting
-  showGreeting() {
-    const userJson = localStorage.getItem("loggedInUser");
-    if (!userJson) return;
-    const user = JSON.parse(userJson);
-    const name = user.username || user.firstName || 'User';
-    this.welcomeMsg = `Hello – ${name}, welcome to your Dashboard!`;
-  }
+  // closeNav() {
+  //   const sidebar = document.getElementById("mySidebar")!;
+  //   const main = document.getElementById("main")!;
+  //   sidebar.style.width = "0";
+  //   main.style.marginLeft = "0";
+  // }
 
   logout() {
-    localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("jwt");
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loginTimestamp');
     this.router.navigate(['/login']);
   }
 
-  // Load/save shifts
-  loadShifts() {
+  loadShifts(): any[] {
     const json = localStorage.getItem('shifts');
-    this.shifts = json ? JSON.parse(json) : [];
+    return json ? JSON.parse(json) : [];
   }
 
-  saveShifts(shiftsArray: Shift[]) {
-    localStorage.setItem('shifts', JSON.stringify(shiftsArray));
-    this.shifts = shiftsArray;
-  }
-
-  // Profit calculation
   calcProfit(start: string, end: string, wage: number): number {
     const [h1, m1] = start.split(':').map(Number);
     const [h2, m2] = end.split(':').map(Number);
@@ -82,62 +60,65 @@ export class HomeComponent implements OnInit {
     if (diff < 0) diff += 24;
     return diff * wage;
   }
+  editShift(slug: string): void {
+    this.router.navigate(['/shiftForm'], { queryParams: { slug } });
+  }
+  
+  deleteShift(slug: string): void {
+    if (!confirm('Delete this shift?')) return;
+    this.shifts = this.shifts.filter(s => s.slug !== slug);
+    localStorage.setItem('shifts', JSON.stringify(this.shifts));
+    this.applyFilters();
+  }
+  
 
-  // Filtering
-  applyFilters() {
-    let shifts = [...this.shifts];
-    const slugVal = this.filters.slug.trim().toLowerCase();
-    if (slugVal) {
-      shifts = shifts.filter(s => s.slug.toLowerCase().includes(slugVal));
+  applyFilters(): void {
+    let shifts = this.loadShifts();
+  
+    if (this.slugFilter.trim()) {
+      const slug = this.slugFilter.trim().toLowerCase();
+      shifts = shifts.filter(s => s.slug.toLowerCase().includes(slug));
     }
-    if (this.filters.from) {
-      shifts = shifts.filter(s => s.date >= this.filters.from);
+  
+    if (this.fromDate) {
+      shifts = shifts.filter(s => s.date >= this.fromDate);
     }
-    if (this.filters.to) {
-      shifts = shifts.filter(s => s.date <= this.filters.to);
+  
+    if (this.toDate) {
+      shifts = shifts.filter(s => s.date <= this.toDate);
     }
-    this.filteredShifts = shifts;
-    this.showBestMonth(shifts);
+  
+    shifts.sort((a, b) => a.date.localeCompare(b.date));
+  
+    this.shifts = shifts;
+    this.calculateBestMonth();
   }
 
-  clearFilters() {
-    this.filters = { slug: '', from: '', to: '' };
+  clearFilters(): void {
+    this.slugFilter = '';
+    this.fromDate = '';
+    this.toDate = '';
     this.applyFilters();
   }
 
-  showBestMonth(shifts: Shift[]) {
+  calculateBestMonth(): void {
     const earnings: Record<string, number> = {};
-    shifts.forEach(s => {
-      const key = s.date.slice(0, 7); // 'YYYY-MM'
+    this.shifts.forEach(s => {
+      const key = s.date.slice(0, 7); // YYYY-MM
       earnings[key] = (earnings[key] || 0) + this.calcProfit(s.startTime, s.endTime, s.hourlyWage);
     });
-    let best = { month: '', total: 0 };
+
+    let best: { month: string | null; total: number } = { month: null, total: 0 };
     for (const [m, total] of Object.entries(earnings)) {
       if (total > best.total) best = { month: m, total };
     }
+
     if (!best.month) {
-      this.bestMonthText = 'No shifts to calculate best month.';
+      this.bestMonth = 'No shifts to calculate best month.';
     } else {
       const [y, mm] = best.month.split('-');
       const name = new Date(+y, +mm - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
-      this.bestMonthText = `Highest earnings: ${name} ($${best.total.toFixed(2)})`;
+      this.bestMonth = `Highest earnings: ${name} ($${best.total.toFixed(2)})`;
     }
-  }
-
-  onRowClick(shift: Shift) {
-    this.router.navigate(['/add_edit_shift'], { queryParams: { slug: shift.slug } });
-  }
-
-  onEdit(shift: Shift, event: MouseEvent) {
-    event.stopPropagation();
-    this.onRowClick(shift);
-  }
-
-  onDelete(shift: Shift, event: MouseEvent) {
-    event.stopPropagation();
-    if (!confirm('Delete this shift?')) return;
-    const updated = this.shifts.filter(s => s.slug !== shift.slug);
-    this.saveShifts(updated);
-    this.applyFilters();
   }
 }

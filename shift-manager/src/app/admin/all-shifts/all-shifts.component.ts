@@ -24,7 +24,14 @@ interface Shift {
 export class AllShiftsComponent implements OnInit {
   shifts: Shift[] = [];
   filteredShifts: Shift[] = [];
-  filters = { name: '', place: '', from: '', to: '' };
+
+  // Developer A’s filter object
+  filters = {
+    name: '',
+    place: '',
+    from: '',
+    to: ''
+  };
 
   constructor(private router: Router) {}
 
@@ -42,16 +49,19 @@ export class AllShiftsComponent implements OnInit {
   applyFilters() {
     let arr = [...this.shifts];
 
-    const n = this.filters.name.trim().toLowerCase();
-    if (n) {
+    // Filter by worker name
+    if (this.filters.name.trim()) {
+      const n = this.filters.name.trim().toLowerCase();
       arr = arr.filter(s => s.user.toLowerCase().includes(n));
     }
 
-    const p = this.filters.place.trim().toLowerCase();
-    if (p) {
+    // Filter by place
+    if (this.filters.place.trim()) {
+      const p = this.filters.place.trim().toLowerCase();
       arr = arr.filter(s => s.place.toLowerCase().includes(p));
     }
 
+    // Date range
     if (this.filters.from) {
       arr = arr.filter(s => s.date >= this.filters.from);
     }
@@ -67,16 +77,21 @@ export class AllShiftsComponent implements OnInit {
     this.applyFilters();
   }
 
+  // Profit calc (public so template can call it)
   calcProfit(s: Shift): number {
-    const [h1, m1] = s.startTime.split(':').map(Number);
-    const [h2, m2] = s.endTime.split(':').map(Number);
+    const [h1,m1] = s.startTime.split(':').map(Number);
+    const [h2,m2] = s.endTime.split(':').map(Number);
     let diff = (h2 + m2/60) - (h1 + m1/60);
     if (diff < 0) diff += 24;
     return diff * s.hourlyWage;
   }
 
   onRowClick(s: Shift) {
-    // navigate to your Add/Edit Shift page with slug query
     this.router.navigate(['/add_edit_shift'], { queryParams: { slug: s.slug } });
   }
+logout()       { 
+    localStorage.removeItem('loggedInUser');
+    this.router.navigate(['/login']); 
+  }
+
 }

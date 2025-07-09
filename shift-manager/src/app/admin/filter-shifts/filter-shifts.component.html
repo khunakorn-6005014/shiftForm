@@ -1,0 +1,89 @@
+<!-- Admin Header -->
+<header class="admin-header">
+   <div class="logo-container">
+            <img src="assets/logo.png" alt="App Logo" class="logo" />
+        </div>
+  <nav>
+    <ul>
+      <li><a routerLink="/admin" routerLinkActive="active">Home</a></li>
+      <li><a routerLink="/admin/shifts" routerLinkActive="active">All Shifts</a></li>
+      <li><a routerLink="/admin/workers" routerLinkActive="active">All Workers</a></li>
+      <span class="spacer"></span>
+      <li><a href="#" (click)="logout()">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="filter-container">
+  <h2>Shifts for {{ workerName }}</h2>
+
+  <!-- Filters -->
+  <div class="filters">
+    <label>
+      Shift Place:
+      <input
+        type="text"
+        [(ngModel)]="filters.place"
+        (ngModelChange)="applyFilters()"
+        placeholder="e.g. Office"
+      />
+    </label>
+
+    <label>
+      From Date:
+      <input
+        type="date"
+        [(ngModel)]="filters.from"
+        (change)="applyFilters()"
+      />
+    </label>
+
+    <label>
+      To Date:
+      <input
+        type="date"
+        [(ngModel)]="filters.to"
+        (change)="applyFilters()"
+      />
+    </label>
+
+    <button (click)="applyFilters()">Search</button>
+    <button (click)="clearFilters()">Reset</button>
+    <button (click)="goBack()">Back</button>
+  </div>
+
+  <!-- Table -->
+  <div class="shifts-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Worker Name</th>
+          <th>Date</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Price/Hour</th>
+          <th>Place</th>
+          <th>Total Profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of filteredShifts">
+          <td>{{ s.user }}</td>
+          <td>{{ s.date }}</td>
+          <td>{{ s.startTime }}</td>
+          <td>{{ s.endTime }}</td>
+          <td>{{ s.hourlyWage | currency }}</td>
+          <td>{{ s.place }}</td>
+          <td>{{ calcProfit(s) | number:'1.2-2' }}</td>
+        </tr>
+        <tr *ngIf="filteredShifts.length === 0">
+          <td colspan="7" class="no-data">No shifts found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="admin-footer">
+  Author: kim and khuna
+</footer>

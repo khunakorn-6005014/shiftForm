@@ -31,3 +31,27 @@ button {
 button:hover {
   background: #0056b3;
 }
+/* Shifts table  and body*/
+.shifts-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.shifts-table th,
+.shifts-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+.shifts-table th {
+  background: #f0f0f0;
+}
+#shiftsBody tr {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#shiftsBody tr:hover {
+  background: #f0f8ff;
+}
+#shiftsBody td:last-child {
+  cursor: default; /* keep buttons as normal */
+}

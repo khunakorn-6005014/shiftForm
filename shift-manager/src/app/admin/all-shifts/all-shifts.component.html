@@ -1,44 +1,58 @@
+ <!-- Admin Header -->
+<header class="admin-header">
+   <div class="logo-container">
+            <img src="assets/logo.png" alt="App Logo" class="logo" />
+        </div>
+  <nav>
+    <ul>
+      <li><a routerLink="/admin" routerLinkActive="active">Home</a></li>
+      <li><a routerLink="/admin/shifts" routerLinkActive="active">All Shifts</a></li>
+      <li><a routerLink="/admin/workers" routerLinkActive="active">All Workers</a></li>
+      <span class="spacer"></span>
+      <li><a href="#" (click)="logout()">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+ <h1>all shift</h1>
+    <!-- <h2>{{ welcomeMsg }}</h2> -->
 <div class="filters">
   <input
     type="text"
-    placeholder="Worker Name"
+    placeholder="Worker name…"
     [(ngModel)]="filters.name"
     (ngModelChange)="applyFilters()"
   />
-
   <input
     type="text"
-    placeholder="Shift Place"
+    placeholder="Shift place…"
     [(ngModel)]="filters.place"
     (ngModelChange)="applyFilters()"
   />
-
   <input
     type="date"
     [(ngModel)]="filters.from"
-    (ngModelChange)="applyFilters()"
+    (change)="applyFilters()"
   />
-
   <input
     type="date"
     [(ngModel)]="filters.to"
-    (ngModelChange)="applyFilters()"
+    (change)="applyFilters()"
   />
-
   <button (click)="applyFilters()">Search</button>
   <button (click)="clearFilters()">Reset</button>
 </div>
 
-<section class="shifts-table">
+<div class="shifts-table">
   <table>
     <thead>
       <tr>
         <th>Worker Name</th>
         <th>Date</th>
-        <th>Beginning Time</th>
+        <th>Start Time</th>
         <th>End Time</th>
-        <th>Price per Hour</th>
-        <th>Shift Place</th>
+        <th>Price/Hour</th>
+        <th>Place</th>
         <th>Total Profit</th>
       </tr>
     </thead>
@@ -58,4 +72,4 @@
       </tr>
     </tbody>
   </table>
-</section>
+</div>
