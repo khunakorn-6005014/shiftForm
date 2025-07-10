@@ -15,6 +15,7 @@ body {
 }
 
 input,
+select,
 button {
     width: 100%;
     padding: 10px;
@@ -190,7 +191,7 @@ header nav ul li a.active {
     position: relative;
 }
 
-.filters input {
+.filters input select {
     flex: 1;
     min-width: 250px;
     /* Adjust as necessary */
@@ -234,33 +235,33 @@ header nav ul li a.active {
     margin-top: 10px;
 }
 
-/* workers table  and body*/
-.workers-table table {
+/* Shifts table  and body*/
+.shifts-table table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.workers-table th,
-.workers-table td {
+.shifts-table th,
+.shifts-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
 }
 
-.workers-table th {
+.shifts-table th {
     background: #f0f0f0;
 }
 
-#workersBody tr {
+#shiftsBody tr {
     cursor: pointer;
     transition: background 0.2s;
 }
 
-#workersBody tr:hover {
+#shiftsBody tr:hover {
     background: #f0f8ff;
 }
 
-#workersBody td:last-child {
+#shiftsBody td:last-child {
     cursor: default;
     /* keep buttons as normal */
 }

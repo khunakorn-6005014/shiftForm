@@ -42,7 +42,7 @@ export class FilterShiftsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // 1) get worker from queryParam
+    // 1) get worker username from queryParam
     const name = this.route.snapshot.queryParamMap.get('username');
     if (!name) {
       this.router.navigate(['/admin/workers']);
@@ -55,11 +55,11 @@ export class FilterShiftsComponent implements OnInit {
     this.shifts = (JSON.parse(raw) as Shift[])
       .filter(s => s.user === this.workerName);
 
-    // 3) init
+    // 3) initialize filtered list
     this.filteredShifts = [...this.shifts];
   }
 
-  // profit calc for template
+  // calculate profit for a shift
   calcProfit(s: Shift): number {
     const [h1,m1] = s.startTime.split(':').map(Number);
     const [h2,m2] = s.endTime.split(':').map(Number);
@@ -68,19 +68,17 @@ export class FilterShiftsComponent implements OnInit {
     return diff * s.hourlyWage;
   }
 
+  // apply filters in-place
   applyFilters() {
     let arr = [...this.shifts];
 
-    // place
     if (this.filters.place.trim()) {
       const p = this.filters.place.trim().toLowerCase();
       arr = arr.filter(s => s.place.toLowerCase().includes(p));
     }
-    // date from
     if (this.filters.from) {
       arr = arr.filter(s => s.date >= this.filters.from);
     }
-    // date to
     if (this.filters.to) {
       arr = arr.filter(s => s.date <= this.filters.to);
     }
@@ -92,20 +90,25 @@ export class FilterShiftsComponent implements OnInit {
     this.filters = { place: '', from: '', to: '' };
     this.applyFilters();
   }
-
   // go back to edit-worker
   goBack() {
-    this.router.navigate(['/admin/edit-worker'], {
+    this.router.navigate(['/admin/worker'], {
       queryParams: { username: this.workerName }
     });
   }
 
   // admin header nav
-  goToAdminHome() { this.router.navigate(['/admin']); }
-  goToAllShifts()  { this.router.navigate(['/admin/shifts']); }
-  goToAllWorkers() { this.router.navigate(['/admin/workers']); }
+ goToShifts() {
+  this.router.navigate(['/admin/shifts']);
+}
+
+goToWorkers() {
+  this.router.navigate(['/admin/workers']);
+}
+
   logout()         { 
     localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loginTimestamp');
     this.router.navigate(['/login']);
   }
 }

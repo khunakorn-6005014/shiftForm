@@ -1,57 +1,40 @@
-import { Component, OnInit }                 from '@angular/core';
-//import { Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { RouterModule,Router, ActivatedRoute }            from '@angular/router';
-import { CommonModule }                      from '@angular/common';
-import { FormsModule }              from '@angular/forms'
-
-//
-interface Shift {
-  user: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  hourlyWage: number;
-  place: string;
-  slug: string;
-  comments: string;
-}
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-add-edit-shift',
+  selector: 'app-shift-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-edit-shift.component.html',
-  styleUrls: ['./add-edit-shift.component.css']
+  styleUrl: './add-edit-shift.component.scss'
 })
-export class AddEditShiftComponent implements OnInit {
-   // Form fields
-  date        = '';
-  startTime   = '';
-  endTime     = '';
-  hourlyWage!: number;
-  place       = '';
-  slug        = '';
-  comments    = '';
-
-  //form!: FormGroup;
-  isEditMode = false;
-  originalSlug: string | null = null;
-  
-  showSpinner = false;
-  // Error messages
-  dateError  = '';
-  timeError  = '';
-  wageError  = '';
-  placeError = '';
-  slugError  = '';
-
-
+export class ShiftFormComponent  implements OnInit {
   STORAGE_KEY = 'shifts';
 
-   constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  loggedInUser: string | null = localStorage.getItem('loggedInUser');
+  date = '';
+  startTime = '';
+  endTime = '';
+  hourlyWage: number | null = null;
+  place = '';
+  slug = '';
+  comments = '';
+
+  isEditMode = false;
+  originalSlug: string | null = null;
+
+  // error messages
+  dateError = '';
+  timeError = '';
+  wageError = '';
+  placeError = '';
+  slugError = '';
+
+  showSpinner = false;
+
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     const slugParam = this.route.snapshot.queryParamMap.get('slug');
@@ -62,7 +45,6 @@ export class AddEditShiftComponent implements OnInit {
       if (shift) {
         this.isEditMode = true;
         this.originalSlug = slugParam;
-        // pre-fill fields
         this.date = shift.date;
         this.startTime = shift.startTime;
         this.endTime = shift.endTime;
@@ -82,14 +64,14 @@ export class AddEditShiftComponent implements OnInit {
   saveShifts(arr: any[]): void {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(arr));
   }
- // real-time time validation
+
   validateTime(): void {
     this.timeError = '';
     if (this.startTime && this.endTime && this.endTime <= this.startTime) {
       this.timeError = 'End must be after start.';
     }
   }
-  // slug uniqueness check
+
   validateSlug(): void {
     const shifts = this.loadShifts();
     const trimmed = this.slug.trim();
@@ -107,13 +89,9 @@ export class AddEditShiftComponent implements OnInit {
     if (this.dateError || this.timeError || this.wageError || this.placeError || this.slugError) {
       return;
     }
-       // build object
-    const rawUser = localStorage.getItem('loggedInUser') || '';
-    const user = rawUser ? JSON.parse(rawUser) : { username: 'unknown' };
-
 
     const shift = {
-      user: user.username,
+      user: this.loggedInUser,
       date: this.date,
       startTime: this.startTime,
       endTime: this.endTime,
@@ -130,17 +108,16 @@ export class AddEditShiftComponent implements OnInit {
       if (this.isEditMode) {
         shifts = shifts.map(s => s.slug === this.originalSlug ? shift : s);
       } else {
+        shifts = shifts.filter(s => s.slug !== shift.slug);
         shifts.push(shift);
       }
       this.saveShifts(shifts);
       this.showSpinner = false;
-      this.router.navigate(['/home']);
+      this.router.navigate(['/myshift']);
     }, 500);
   }
 
   cancel(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/myshift']);
   }
 }
-
-  

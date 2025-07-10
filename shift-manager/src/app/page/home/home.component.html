@@ -1,21 +1,3 @@
-<!-- src/app/page/home/home.component.html -->
-
-
-
-<!-- Sidebar -->
-<!-- <div id="mySidebar" class="sidebar" [class.open]="sidebarOpen">
-  <a class="closebtn" (click)="closeNav()">×</a>
-  <a routerLink="/"      (click)="closeNav()">Home</a>
-  <a routerLink="/profile" (click)="closeNav()">Profile</a>
-  <a routerLink="/add_edit_shift" (click)="closeNav()">Shifts</a>
-  <a href="#" (click)="logout()">Logout</a>
-  <hr>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
-</div> -->
-<!-- Main -->
 <div id="main">
     <header>
         <div class="logo-container">
@@ -37,65 +19,9 @@
         <h1>Welcome to Your Dashboard</h1>
         <p>Select an option from the menu to begin.</p>
 
-        <!-- Filters -->
-        <section class="filters">
-            <div class="filter-item">
-                <label>Shift Slug:</label>
-                <div class="input-wrapper">
-                    <input type="text" [(ngModel)]="slugFilter" (keyup)="applyFilters()"
-                        placeholder="Search by shift slug…">
-                </div>
-            </div>
-            <div class="filter-item">
-                <label>From Date:</label>
-                <input type="date" [(ngModel)]="fromDate" (change)="applyFilters()">
-            </div>
-            <div class="filter-item">
-                <label>To Date:</label>
-                <input type="date" [(ngModel)]="toDate" (change)="applyFilters()">
-            </div>
-            <div class="filter-actions">
-                <button (click)="applyFilters()">Apply Filters</button>
-                <button (click)="clearFilters()">Clear Filters</button>
-            </div>
-        </section>
+        <!-- TODO: dash board, summary -->
+        <p><strong>Working on dashboard</strong></p>
 
-        <!-- Shifts Table -->
-        <section class="shifts-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Slug</th>
-                        <th>Date</th>
-                        <th>Start time</th>
-                        <th>End time</th>
-                        <th>Wage</th>
-                        <th>Place</th>
-                        <th>Profit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let s of shifts">
-                        <td>{{ s.slug }}</td>
-                        <td>{{ s.date }}</td>
-                        <td>{{ s.startTime }}</td>
-                        <td>{{ s.endTime }}</td>
-                        <td>${{ s.hourlyWage }}</td>
-                        <td>{{ s.place }}</td>
-                        <td>${{ calcProfit(s.startTime, s.endTime, s.hourlyWage).toFixed(2) }}</td>
-                        <td>
-                          <button (click)="editShift(s.slug); $event.stopPropagation()">Edit</button>
-                          <button (click)="deleteShift(s.slug); $event.stopPropagation()">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- Summary -->
-        <section class="summary">
-            <p>{{ bestMonth }}</p>
-        </section>
     </main>
 
     <footer>

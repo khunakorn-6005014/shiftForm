@@ -4,19 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-my-shift',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  templateUrl: './my-shift.component.html',
+  styleUrl: './my-shift.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class MyShiftComponent implements OnInit {
+  allShifts: any[] = [];
   shifts: any[] = [];
   bestMonth: string = 'Loading best month…';
   slugFilter: string = '';
   fromDate: string = '';
   toDate: string = '';
   loggedInUser: string | null = localStorage.getItem('loggedInUser');
+  placeFilter: string = '';
 
 
   ngOnInit() {
@@ -53,11 +55,10 @@ export class HomeComponent implements OnInit {
   
   deleteShift(slug: string): void {
     if (!confirm('Delete this shift?')) return;
-    this.shifts = this.shifts.filter(s => s.slug !== slug);
-    localStorage.setItem('shifts', JSON.stringify(this.shifts));
+    const shifts = this.allShifts.filter(s => s.slug !== slug);
+    localStorage.setItem('shifts', JSON.stringify(shifts));
     this.applyFilters();
   }
-  
 
   applyFilters(): void {
     if (!this.loggedInUser) {
@@ -65,11 +66,14 @@ export class HomeComponent implements OnInit {
       return;
     }
   
-    let shifts = this.loadShifts();
+    this.allShifts = this.loadShifts();
   
+    let shifts = this.allShifts.filter(s => s.user === this.loggedInUser);
+  
+    if (this.placeFilter) {
+      shifts = shifts.filter(s => s.place === this.placeFilter);
+    }
 
-    shifts = shifts.filter(s => s.user === this.loggedInUser);
-  
     if (this.slugFilter.trim()) {
       const slug = this.slugFilter.trim().toLowerCase();
       shifts = shifts.filter(s => s.slug.toLowerCase().includes(slug));
@@ -91,6 +95,7 @@ export class HomeComponent implements OnInit {
   
 
   clearFilters(): void {
+    this.placeFilter = '';
     this.slugFilter = '';
     this.fromDate = '';
     this.toDate = '';

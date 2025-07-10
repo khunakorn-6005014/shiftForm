@@ -89,9 +89,17 @@ export class AllShiftsComponent implements OnInit {
   onRowClick(s: Shift) {
     this.router.navigate(['/add_edit_shift'], { queryParams: { slug: s.slug } });
   }
+  goToShifts() {
+  this.router.navigate(['/admin/shifts']);
+}
+
+goToWorkers() {
+  this.router.navigate(['/admin/workers']);
+}
 logout()       { 
     localStorage.removeItem('loggedInUser');
-    this.router.navigate(['/login']); 
+    localStorage.removeItem('loginTimestamp');
+    this.router.navigate(['/admin/login']); 
   }
 
 }

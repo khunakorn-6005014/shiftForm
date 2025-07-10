@@ -2,22 +2,25 @@
 <div id="main">
     <header>
         <div class="logo-container">
-            <img src="assets/logo.png" alt="App Logo" class="logo" />
+            <img src="../logo.png" alt="App Logo" class="logo" />
         </div>
 
         <nav>
             <ul>
-                <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
-                <li><a routerLink="/shifts" routerLinkActive="active">All Shifts</a></li>
-                <li><a routerLink="/workers" routerLinkActive="active">All Workers</a></li>
-                <span class="spacer"></span>
-                <span class="greeting">Hello, {{ currentAdminName }}</span>
-                <li><a href="#" (click)="logout()">Logout</a></li>
-            </ul>
+               <li><a routerLink="/admin/home" routerLinkActive="active">Home</a></li>
+               <li><a (click)="goToShifts()">All Shifts</a></li>
+               <li><a routerLink="/admin/workers">All Workers</a></li>
+
+               <span class="spacer"></span>
+               <li><a (click)="logout()">Logout</a></li>
+</ul>
         </nav>
     </header>
 
   <main class="admin-dashboard">
+    <h1>Welcome to Your admin Dashboard</h1>
+        <p>Select an option from the menu to begin.</p>
+
   <section class="card worker-of-month">
     <h3>Worker of Last Month</h3>
     <p *ngIf="topWorkerCount; else noneLastMonth">

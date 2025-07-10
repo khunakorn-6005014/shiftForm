@@ -1,7 +1,7 @@
 import { Component, OnInit }            from '@angular/core';
 import { CommonModule }                  from '@angular/common';
 import { RouterModule, Router }          from '@angular/router';
-
+import { FormsModule } from '@angular/forms'; 
 interface Shift {
   user: string;
   date: string;
@@ -15,7 +15,7 @@ interface Shift {
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule,  FormsModule,RouterModule],
   templateUrl: './admin-home.component.html',
   styleUrls: ['./admin-home.component.scss']
 })
@@ -33,18 +33,13 @@ export class AdminHomeComponent implements OnInit {
 
   ngOnInit() {
     // 1) verify admin
-    const rawAdmins = localStorage.getItem('adminUsers') || '[]';
-    const adminUsers: string[] = JSON.parse(rawAdmins);  
-    const rawLogged = localStorage.getItem('loggedInUser') || '';
-    const loggedObj = rawLogged ? JSON.parse(rawLogged) : null;
-    const username = loggedObj?.username;
-
-    if (!username || !adminUsers.includes(username)) {
+    const loggedIn = localStorage.getItem('adminUsers');
+    if (!loggedIn) {
       // not an admin → kick back to login
-      this.router.navigate(['/login']);
+      this.router.navigate(['/admin/login']);
       return;
     }
-    this.currentAdminName = username;
+  
 
     // 2) load and compute stats
     this.shifts = this.loadShifts();
@@ -53,11 +48,19 @@ export class AdminHomeComponent implements OnInit {
     this.computeBestMonth();
   }
 
-  goToShifts()   { this.router.navigate(['/shifts']); }
-  goToWorkers()  { this.router.navigate(['/workers']); }
+goToShifts() {
+  this.router.navigate(['/admin/shifts']);
+}
+
+goToWorkers() {
+  this.router.navigate(['/admin/workers']);
+}
+
+
   logout()       { 
     localStorage.removeItem('loggedInUser');
-    this.router.navigate(['/login']); 
+     localStorage.removeItem('loginTimestamp');
+    this.router.navigate(['/admin/login']); 
   }
 
   private loadShifts(): Shift[] {

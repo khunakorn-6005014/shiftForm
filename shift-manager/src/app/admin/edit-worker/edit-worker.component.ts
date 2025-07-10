@@ -56,21 +56,18 @@ export class EditWorkerComponent implements OnInit {
 
     // Load the worker to edit
     const username = this.route.snapshot.queryParamMap.get('username');
-    const rawUsers = localStorage.getItem('users') || '[]';
-    const users: Worker[] = JSON.parse(rawUsers);
-
     if (!username) {
-      this.router.navigate(['/admin']);
+      this.router.navigate(['/admin/home']);
       return;
     }
+    this.originalUsername = username;
 
+    const users: Worker[] = JSON.parse(localStorage.getItem('users') || '[]');
     const worker = users.find(u => u.username === username);
     if (!worker) {
-      this.router.navigate(['/admin']);
+      this.router.navigate(['/admin/home']);
       return;
     }
-
-    this.originalUsername = worker.username;
 
     // Pre-fill form (leave password blank)
     this.form.patchValue({
@@ -81,68 +78,73 @@ export class EditWorkerComponent implements OnInit {
     });
   }
 
-  // Navigate to filter-shifts for this worker
-  filterShifts() {
-    this.router.navigate(['/admin/shifts'], {
-      queryParams: { name: this.originalUsername }
-    });
+  // Navigate to filter-shifts for this worker**
+   filterShifts() {
+    this.router.navigate(
+      ['/admin/filter'],
+      { queryParams: { username: this.originalUsername } }
+    );
   }
 
+
   // Update the worker record
+  // -- ACTIONS --
   updateWorker() {
-    this.errorMessage = '';
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    this.showSpinner = true;
     const vals = this.form.value;
-    const rawUsers = localStorage.getItem('users') || '[]';
-    const users: Worker[] = JSON.parse(rawUsers);
+    const users: Worker[] = JSON.parse(localStorage.getItem('users') || '[]');
 
-    // Check for username conflicts if username could change (skipped here)
-
-    // Build updated worker
+    // Build updated record
+    const existing = users.find(u => u.username === this.originalUsername)!;
     const updated: Worker = {
+      ...existing,
       email:     vals.email,
-      username:  this.originalUsername,
-      password:  vals.password || 
-                 users.find(u => u.username === this.originalUsername)!.password,
+      password:  vals.password || existing.password,
       firstName: vals.firstName,
       lastName:  vals.lastName,
       birthday:  vals.birthday
     };
 
-    // Replace in array
+    // Replace and save
     const idx = users.findIndex(u => u.username === this.originalUsername);
     users[idx] = updated;
-    this.showSpinner = true;
-
-    // Simulate server latency
     setTimeout(() => {
       localStorage.setItem('users', JSON.stringify(users));
       this.showSpinner = false;
-      this.router.navigate(['/admin']);
+      this.router.navigate(['/admin/home']);
     }, 500);
   }
 
+
   // Delete this worker
-  deleteWorker() {
-    if (!confirm('Are you sure you want to delete this worker?')) return;
-
-    const rawUsers = localStorage.getItem('users') || '[]';
-    let users: Worker[] = JSON.parse(rawUsers);
+ deleteWorker() {
+    if (!confirm('Delete this worker?')) return;
+    let users: Worker[] = JSON.parse(localStorage.getItem('users') || '[]');
     users = users.filter(u => u.username !== this.originalUsername);
-
     localStorage.setItem('users', JSON.stringify(users));
-    this.router.navigate(['/admin']);
+    this.router.navigate(['/admin/home']);
   }
+
+goToShifts() {
+  this.router.navigate(['/admin/shifts']);
+}
+
+goToWorkers() {
+  this.router.navigate(['/admin/workers']);
+}
+
   logout()       { 
     localStorage.removeItem('loggedInUser');
-    this.router.navigate(['/login']); 
+     localStorage.removeItem('loginTimestamp');
+    this.router.navigate(['/admin/login']); 
   }
-  // ---- Validators ----
 
+  // -- VALIDATORS --
   private passwordsMatchValidator(group: AbstractControl): ValidationErrors|null {
     const pw = group.get('password')?.value;
     const vp = group.get('verifyPassword')?.value;
@@ -159,16 +161,16 @@ export class EditWorkerComponent implements OnInit {
       if (m < 0 || (m === 0 && new Date().getDate() < birth.getDate())) {
         age--;
       }
-      return (age < min || age > max) ? { invalidAge: true } : null;
+      return age < min || age > max ? { invalidAge: true } : null;
     };
   }
 
   // getters for template
-  get email()     { return this.form.get('email'); }
-  get password()  { return this.form.get('password'); }
-  get verifyPwd() { return this.form.get('verifyPassword'); }
-  get firstName() { return this.form.get('firstName'); }
-  get lastName()  { return this.form.get('lastName'); }
-  get birthday()  { return this.form.get('birthday'); }
-  
+  get email()      { return this.form.get('email'); }
+  get password()   { return this.form.get('password'); }
+  get verifyPwd()  { return this.form.get('verifyPassword'); }
+  get firstName()  { return this.form.get('firstName'); }
+  get lastName()   { return this.form.get('lastName'); }
+  get birthday()   { return this.form.get('birthday'); }
 }
+

@@ -2,7 +2,7 @@
 import { Component, OnInit }      from '@angular/core';
 import { CommonModule }            from '@angular/common';
 import { Router, RouterModule }    from '@angular/router';
-
+import { FormsModule } from '@angular/forms';
 interface Worker {
   email: string;
   username: string;
@@ -15,7 +15,7 @@ interface Worker {
 @Component({
   selector: 'app-all-workers',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule,FormsModule, RouterModule],
   templateUrl: './all-workers.component.html',
   styleUrls: ['./all-workers.component.scss']
 })
@@ -27,35 +27,33 @@ export class AllWorkersComponent implements OnInit {
 
   ngOnInit() {
     // 1) verify admin & grab name
-    const rawAdmins = localStorage.getItem('adminUsers') || '[]';
-    const adminUsers: string[] = JSON.parse(rawAdmins);
-
-    const rawLogged = localStorage.getItem('loggedInUser') || '';
-    const loggedObj = rawLogged ? JSON.parse(rawLogged) : null;
-    const username = loggedObj?.username;
-
-    if (!username || !adminUsers.includes(username)) {
-      this.router.navigate(['/login']);
+    const rawLogged = localStorage.getItem('loggedInUser');
+    if (!rawLogged) {
+      this.router.navigate(['/admin/login']);
       return;
     }
-    this.currentAdminName = username;
 
     // 2) load all workers
     const raw = localStorage.getItem('users') || '[]';
     this.workers = JSON.parse(raw) as Worker[];
   }
 
-
-
   editWorker(username: string) {
     this.router.navigate(
-      ['/admin/edit-worker'],
+      ['/admin/worker'],
       { queryParams: { username } }
     );
   }
+goToShifts() {
+  this.router.navigate(['/admin/shifts']);
+}
 
+goToWorkers() {
+  this.router.navigate(['/admin/workers']);
+}
   logout() {
     localStorage.removeItem('loggedInUser');
-    this.router.navigate(['/login']);
+    localStorage.removeItem('loginTimestamp');
+    this.router.navigate(['/admin/login']);
   }
 }

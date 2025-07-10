@@ -3,23 +3,29 @@
             <img src="assets/logo.png" alt="App Logo" class="logo" />
         </div>
   <nav>
-     <ul>
-      <li><a routerLink="/admin" routerLinkActive="active">Home</a></li>
-      <li><a routerLink="/admin/shifts" routerLinkActive="active">All Shifts</a></li>
-      <li><a routerLink="/admin/workers" routerLinkActive="active">All Workers</a></li>
-      <span class="spacer"></span>
-      <li><a href="#" (click)="logout()">Logout</a></li>
-    </ul>
+      <ul>
+               <li><a routerLink="/admin/home" routerLinkActive="active">Home</a></li>
+               <li><a (click)="goToShifts()">All Shifts</a></li>
+               <li><a routerLink="/admin/workers">All Workers</a></li>
+
+               <span class="spacer"></span>
+               <li><a (click)="logout()">Logout</a></li>
+</ul>
   </nav>
 </header>
 
 <main class="form-container">
   <h2>Edit Worker: {{ originalUsername }}</h2>
+
   <form [formGroup]="form" (ngSubmit)="updateWorker()">
     <label>Email
       <input type="email" formControlName="email" />
-      <small *ngIf="email?.touched && email?.hasError('required')">Required</small>
-      <small *ngIf="email?.touched && email?.hasError('email')">Invalid</small>
+      <small *ngIf="email?.touched && email?.hasError('required')">
+        Required
+      </small>
+      <small *ngIf="email?.touched && email?.hasError('email')">
+        Invalid email
+      </small>
     </label>
 
     <label>New Password
@@ -32,7 +38,7 @@
     <label>Confirm Password
       <input type="password" formControlName="verifyPassword" />
       <small *ngIf="form.hasError('passwordMismatch')">
-        Passwords must match
+        Must match
       </small>
     </label>
 
@@ -68,10 +74,12 @@
         Delete Worker
       </button>
     </div>
-
-    <div *ngIf="showSpinner" class="spinner-overlay">
-      <div class="spinner"></div>
-    </div>
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
   </form>
+
+  <div *ngIf="showSpinner" class="spinner-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
 </main>
+
