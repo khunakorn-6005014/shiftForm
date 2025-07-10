@@ -1,0 +1,47 @@
+<div class="container">
+    <h2>[Admin] Register for Manage My Shifts</h2>
+    <div class="requirements-box">
+        <p [class.valid]="isValid.email">✔ Email must be valid </p>
+        <p [class.valid]="isValid.username">✔ Username: ≥ 6 chars, 1 number, 1 special character</p>
+        <p [class.valid]="isValid.password">✔ Password: ≥ 6 chars, includes number</p>
+        <p [class.valid]="isValid.verifyPassword">✔ Passwords match</p>
+        <p [class.valid]="isValid.firstName">✔ First name: ≥ 2 characters</p>
+        <p [class.valid]="isValid.lastName">✔ Last name: ≥ 2 characters</p>
+        <p [class.valid]="isValid.birthday">✔ Age must be between 18 and 65</p>
+    </div>
+
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="input-group">
+            <label>Email</label>
+            <input id="email" type="email" formControlName="email" />
+
+            <label>Username</label>
+            <input id="username" type="text" formControlName="username" />
+
+            <label>Password</label>
+            <input id="password" type="password" formControlName="password" />
+
+            <label>Verify Password</label>
+            <input id="verifyPassword" type="password" formControlName="verifyPassword" />
+
+            <label>First Name</label>
+            <input id="firstName" type="text" formControlName="firstName" />
+
+            <label>Last Name</label>
+            <input id="lastName" type="text" formControlName="lastName" />
+
+            <label>Birthday</label>
+            <input id="birthday" type="date" formControlName="birthday" [min]="minDate" [max]="maxDate"
+                (blur)="validateBirthday()" />
+
+        </div>
+
+        <button type="submit" id="registerBtn" class="btn">Register</button>
+    </form>
+</div>
+
+<!-- Angular 방식 스피너 표시 -->
+<div class="spinner-overlay" *ngIf="showSpinner">
+    <div class="spinner"></div>
+</div>

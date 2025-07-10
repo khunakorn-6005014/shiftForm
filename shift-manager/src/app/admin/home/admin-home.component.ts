@@ -53,8 +53,8 @@ export class AdminHomeComponent implements OnInit {
     this.computeBestMonth();
   }
 
-  goToShifts()   { this.router.navigate(['/admin/shifts']); }
-  goToWorkers()  { this.router.navigate(['/admin/workers']); }
+  goToShifts()   { this.router.navigate(['/shifts']); }
+  goToWorkers()  { this.router.navigate(['/workers']); }
   logout()       { 
     localStorage.removeItem('loggedInUser');
     this.router.navigate(['/login']); 
