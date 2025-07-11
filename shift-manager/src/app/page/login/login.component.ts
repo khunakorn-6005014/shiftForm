@@ -65,7 +65,8 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('loginTimestamp', new Date().getTime().toString());
       localStorage.setItem('loggedInUser', foundUser.username);
 
-      window.location.href = 'home';
+      // window.location.href = 'admin/home';
+    this.router.navigate(['/home']);
     } else {
       this.errorMessage = 'Invalid username or password.';
     }

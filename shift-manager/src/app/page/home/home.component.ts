@@ -11,23 +11,38 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  shifts: any[] = [];
+  loggedInUser = localStorage.getItem('loggedInUser');
+  upcomingShift: any = null;
+  pastShifts: any[] = [];
   bestMonth: string = 'Loading best month…';
-  slugFilter: string = '';
-  fromDate: string = '';
-  toDate: string = '';
-  loggedInUser: string | null = localStorage.getItem('loggedInUser');
-
-
-  ngOnInit() {
-    const loggedIn = localStorage.getItem('loggedInUser');
-    if (!loggedIn) {
-      this.router.navigate(['/login']);
-    }
-    this.applyFilters();
-  }
+  shifts: any[] = this.loadShifts();
 
   constructor(private router: Router) {}
+
+  ngOnInit(): void {
+    const shifts = JSON.parse(localStorage.getItem('shifts') || '[]')
+      .filter((s: any) => s.user === this.loggedInUser);
+
+    const today = new Date().toISOString().split('T')[0];
+    const dayOfWeek = new Date().getDay(); // 0 (Sun) ~ 6 (Sat)
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek);
+    const endOfToday = new Date();
+
+    const formatDate = (d: Date) => d.toISOString().split('T')[0];
+
+    this.upcomingShift = shifts
+      .filter((s: any) => s.date > today)
+      .sort((a: any, b: any) => a.date.localeCompare(b.date))[0] || null;
+
+    this.pastShifts = shifts.filter((s: any) => {
+      return s.date < today &&
+        s.date >= formatDate(startOfWeek) &&
+        s.date <= formatDate(endOfToday);
+    }).sort((a: any, b: any) => b.date.localeCompare(a.date));
+
+    this.calculateBestMonth();
+  }
 
   logout() {
     localStorage.removeItem('loggedInUser');
@@ -37,7 +52,10 @@ export class HomeComponent implements OnInit {
 
   loadShifts(): any[] {
     const json = localStorage.getItem('shifts');
-    return json ? JSON.parse(json) : [];
+    const allShifts = json ? JSON.parse(json) : [];
+  
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    return allShifts.filter((shift: any) => shift.user === loggedInUser);
   }
 
   calcProfit(start: string, end: string, wage: number): number {
@@ -46,55 +64,6 @@ export class HomeComponent implements OnInit {
     let diff = (h2 + m2 / 60) - (h1 + m1 / 60);
     if (diff < 0) diff += 24;
     return diff * wage;
-  }
-  editShift(slug: string): void {
-    this.router.navigate(['/shiftForm'], { queryParams: { slug } });
-  }
-  
-  deleteShift(slug: string): void {
-    if (!confirm('Delete this shift?')) return;
-    this.shifts = this.shifts.filter(s => s.slug !== slug);
-    localStorage.setItem('shifts', JSON.stringify(this.shifts));
-    this.applyFilters();
-  }
-  
-
-  applyFilters(): void {
-    if (!this.loggedInUser) {
-      this.shifts = [];
-      return;
-    }
-  
-    let shifts = this.loadShifts();
-  
-
-    shifts = shifts.filter(s => s.user === this.loggedInUser);
-  
-    if (this.slugFilter.trim()) {
-      const slug = this.slugFilter.trim().toLowerCase();
-      shifts = shifts.filter(s => s.slug.toLowerCase().includes(slug));
-    }
-  
-    if (this.fromDate) {
-      shifts = shifts.filter(s => s.date >= this.fromDate);
-    }
-  
-    if (this.toDate) {
-      shifts = shifts.filter(s => s.date <= this.toDate);
-    }
-  
-    shifts.sort((a, b) => a.date.localeCompare(b.date));
-  
-    this.shifts = shifts;
-    this.calculateBestMonth();
-  }
-  
-
-  clearFilters(): void {
-    this.slugFilter = '';
-    this.fromDate = '';
-    this.toDate = '';
-    this.applyFilters();
   }
 
   calculateBestMonth(): void {

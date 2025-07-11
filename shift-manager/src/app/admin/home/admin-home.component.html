@@ -23,6 +23,9 @@
 
   <section class="card worker-of-month">
     <h3>Worker of Last Month</h3>
+    <thead>
+        <tr><th>WorkerName    |</th><th>Count</th></tr>
+      </thead>
     <p *ngIf="topWorkerCount; else noneLastMonth">
       {{ topWorkerName }} — {{ topWorkerCount }} shifts
     </p>

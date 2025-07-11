@@ -16,13 +16,38 @@
     </header>
 
     <main>
-        <h1>Welcome to Your Dashboard</h1>
-        <p>Select an option from the menu to begin.</p>
-
-        <!-- TODO: dash board, summary -->
-        <p><strong>Working on dashboard</strong></p>
+        <main class="dashboard">
+            <!-- Upcoming Shift -->
+            <section class="card upcoming">
+              <h2>Upcoming Shift</h2>
+              <p *ngIf="upcomingShift; else noUpcoming">
+                {{ upcomingShift.date }},  {{ upcomingShift.place }}<br />
+                {{ upcomingShift.startTime }} - {{ upcomingShift.endTime }}
+              </p>
+              <ng-template #noUpcoming>
+                <p>No upcoming shifts.</p>
+              </ng-template>
+            </section>
+          
+            <!-- This Week's Past Shifts -->
+            <section class="card week-history">
+              <h2>This Week’s Past Shifts</h2>
+              <ul *ngIf="pastShifts.length > 0; else noPast">
+                <li *ngFor="let shift of pastShifts">
+                  {{ shift.date }}: {{ shift.place }} ({{ shift.startTime }} - {{ shift.endTime }})
+                </li>
+              </ul>
+              <ng-template #noPast>
+                <p>No past shifts this week.</p>
+              </ng-template>
+            </section>
+          </main>
 
     </main>
+
+    <section class="summary">
+        <p>{{ bestMonth }}</p>
+    </section>
 
     <footer>
         <p>Author: kim and khuna</p>

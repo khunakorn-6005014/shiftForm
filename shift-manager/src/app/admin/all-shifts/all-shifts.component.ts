@@ -87,7 +87,7 @@ export class AllShiftsComponent implements OnInit {
   }
 
   onRowClick(s: Shift) {
-    this.router.navigate(['/shiftForm'], { queryParams: { slug: s.slug } });
+    this.router.navigate(['/admin/shiftFormAd'], { queryParams: { slug: s.slug } });
   }
   goToShifts() {
   this.router.navigate(['/admin/shifts']);

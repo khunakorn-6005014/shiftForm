@@ -15,6 +15,7 @@ body {
 }
 
 input,
+select,
 button {
     width: 100%;
     padding: 10px;
@@ -308,21 +309,3 @@ footer {
     background-color: rgb(8, 33, 223);
     color: white;
 }
-.dashboard {
-    padding: 2rem;
-    display: grid;
-    gap: 2rem;
-  }
-  
-  .card {
-    border: 1px solid #ccc;
-    padding: 1rem;
-    border-radius: 10px;
-    background-color: #fdfdfd;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .card h2 {
-    margin-top: 0;
-  }
-  
