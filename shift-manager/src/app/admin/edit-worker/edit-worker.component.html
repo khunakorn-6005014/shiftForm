@@ -1,0 +1,85 @@
+<header class="admin-header">
+   <div class="logo-container">
+            <img src="assets/logo.png" alt="App Logo" class="logo" />
+        </div>
+  <nav>
+      <ul>
+               <li><a routerLink="/admin/home" routerLinkActive="active">Home</a></li>
+               <li><a (click)="goToShifts()">All Shifts</a></li>
+               <li><a routerLink="/admin/workers">All Workers</a></li>
+
+               <span class="spacer"></span>
+               <li><a (click)="logout()">Logout</a></li>
+</ul>
+  </nav>
+</header>
+
+<main class="form-container">
+  <h2>Edit Worker: {{ originalUsername }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="updateWorker()">
+    <label>Email
+      <input type="email" formControlName="email" />
+      <small *ngIf="email?.touched && email?.hasError('required')">
+        Required
+      </small>
+      <small *ngIf="email?.touched && email?.hasError('email')">
+        Invalid email
+      </small>
+    </label>
+
+    <label>New Password
+      <input type="password" formControlName="password" />
+      <small *ngIf="password?.touched && password?.hasError('minlength')">
+        Min 6 chars
+      </small>
+    </label>
+
+    <label>Confirm Password
+      <input type="password" formControlName="verifyPassword" />
+      <small *ngIf="form.hasError('passwordMismatch')">
+        Must match
+      </small>
+    </label>
+
+    <label>First Name
+      <input type="text" formControlName="firstName" />
+      <small *ngIf="firstName?.touched && firstName?.hasError('minlength')">
+        Min 2 chars
+      </small>
+    </label>
+
+    <label>Last Name
+      <input type="text" formControlName="lastName" />
+      <small *ngIf="lastName?.touched && lastName?.hasError('minlength')">
+        Min 2 chars
+      </small>
+    </label>
+
+    <label>Birth Date
+      <input type="date" formControlName="birthday" />
+      <small *ngIf="form.hasError('invalidAge')">
+        Age must be between 18–65
+      </small>
+    </label>
+
+    <div class="buttons">
+      <button type="button" (click)="filterShifts()">
+        Filter Shifts
+      </button>
+      <button type="submit">
+        Update Worker
+      </button>
+      <button type="button" class="danger" (click)="deleteWorker()">
+        Delete Worker
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="showSpinner" class="spinner-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</main>
+

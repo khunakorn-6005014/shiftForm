@@ -1,0 +1,311 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 400px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input,
+select,
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+button {
+    background: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* Sidebar styling */
+.sidebar {
+    height: 100%;
+    width: 0;
+    /* hidden by default */
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 1rem;
+    color: #ddd;
+    display: block;
+    transition: 0.2s;
+}
+
+.sidebar a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 1.5rem;
+}
+
+/* Main content shift */
+#main {
+    transition: margin-left 0.3s;
+    padding: 0;
+}
+
+/* Hamburger icon */
+.openbtn {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    padding: 10px 15px;
+    display: inline-block;
+}
+
+/* Header nav */
+header {
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+header nav ul li {
+    margin-left: 20px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 10px;
+    transition: background 0.2s, color 0.2s;
+}
+
+header nav ul li a:hover,
+header nav ul li a.active {
+    background: #007BFF;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: -8px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.notification-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffcc00;
+    color: #000;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.notification-banner.hidden {
+    display: none;
+}
+
+.container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+    align-items: flex-end;
+
+}
+
+.filter-item {
+    flex: 1;
+    min-width: 250px;
+}
+
+.filter-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.filters input {
+    flex: 1;
+    min-width: 250px;
+    /* Adjust as necessary */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border 0.3s, box-shadow 0.3s;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.filters input:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+.filters button {
+    padding: 8px 12px;
+}
+
+.clear-field {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    font-size: 1.2rem;
+    display: none;
+    /* will be toggled via JS */
+}
+
+.input-wrapper input:not(:placeholder-shown)+.clear-field {
+    display: block;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Shifts table  and body*/
+.shifts-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.shifts-table th,
+.shifts-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.shifts-table th {
+    background: #f0f0f0;
+}
+
+#shiftsBody tr {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#shiftsBody tr:hover {
+    background: #f0f8ff;
+}
+
+#shiftsBody td:last-child {
+    cursor: default;
+    /* keep buttons as normal */
+}
+
+
+/* Summary */
+.summary {
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #007BFF;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/*footer*/
+footer {
+    text-align: center;
+    padding: 3px;
+    background-color: rgb(8, 33, 223);
+    color: white;
+}

@@ -1,0 +1,37 @@
+<div class="container">
+    <h2>Edit Your Profile</h2>
+
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <div class="input-group">
+            <label>Email</label>
+            <input id="email" type="email" formControlName="email" />
+
+            <label>Username</label>
+            <input id="username" type="text" formControlName="username" />
+
+            <label>First Name</label>
+            <input id="firstName" type="text" formControlName="firstName" />
+
+            <label>Last Name</label>
+            <input id="lastName" type="text" formControlName="lastName" />
+
+            <label>Birthday</label>
+            <input id="birthday" type="date" formControlName="birthday" [min]="minDate" [max]="maxDate"
+                (blur)="validateBirthday()" />
+
+            <label>Password</label>
+            <input id="password" type="password" formControlName="password" />
+
+            <label>Verify Password</label>
+            <input id="verifyPassword" type="password" formControlName="verifyPassword" />
+        </div>
+
+        <button type="submit" class="btn">Update Profile</button>
+        <button type="button" class="btn cancel" (click)="cancel()">Cancel</button>
+    </form>
+</div>
+
+<!-- Spinner -->
+<div class="spinner-overlay" *ngIf="showSpinner">
+    <div class="spinner"></div>
+</div>

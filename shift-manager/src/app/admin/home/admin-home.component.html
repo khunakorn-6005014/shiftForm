@@ -1,0 +1,63 @@
+<!-- Main -->
+<div id="main">
+    <header>
+        <div class="logo-container">
+            <img src="../logo.png" alt="App Logo" class="logo" />
+        </div>
+
+        <nav>
+            <ul>
+               <li><a routerLink="/admin/home" routerLinkActive="active">Home</a></li>
+               <li><a (click)="goToShifts()">All Shifts</a></li>
+               <li><a routerLink="/admin/workers">All Workers</a></li>
+
+               <span class="spacer"></span>
+               <li><a (click)="logout()">Logout</a></li>
+</ul>
+        </nav>
+    </header>
+
+  <main class="admin-dashboard">
+    <h1>Welcome to Your admin Dashboard</h1>
+        <p>Select an option from the menu to begin.</p>
+
+  <section class="card worker-of-month">
+    <h3>Worker of Last Month</h3>
+    <p *ngIf="topWorkerCount; else noneLastMonth">
+      {{ topWorkerName }} — {{ topWorkerCount }} shifts
+    </p>
+    <ng-template #noneLastMonth>
+      <p>No shifts recorded last month.</p>
+    </ng-template>
+  </section>
+
+  <section class="card weekly-shifts">
+    <h3>Shifts in the Past Week</h3>
+    <table *ngIf="weeklyShifts.length; else noneWeek">
+      <thead>
+        <tr><th>Date</th><th>Worker</th><th>Slug</th><th>Profit</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of weeklyShifts">
+          <td>{{ s.date }}</td>
+          <td>{{ s.user }}</td>
+          <td>{{ s.slug }}</td>
+          <td>{{ calcProfit(s) | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noneWeek>
+      <p>No shifts in the past 7 days.</p>
+    </ng-template>
+  </section>
+
+  <section class="card best-month">
+    <h3>Best Month Summary</h3>
+    <p>{{ bestMonthText }}</p>
+  </section>
+</main>
+
+    <footer>
+        <p>Author: kim and khuna</p>
+    </footer>
+</div>

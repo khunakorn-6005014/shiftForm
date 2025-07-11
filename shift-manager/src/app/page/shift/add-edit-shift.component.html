@@ -1,0 +1,58 @@
+<div class="container">
+    <h2>{{ isEditMode ? 'Edit Shift' : 'Add New Shift' }}</h2>
+    <form (ngSubmit)="onSubmit()">
+      <label>
+        Date
+        <input type="date" [(ngModel)]="date" name="date" required>
+        <span class="error-message">{{ dateError }}</span>
+      </label>
+  
+      <label>
+        Start Time
+        <input type="time" [(ngModel)]="startTime" name="startTime" required (input)="validateTime()">
+      </label>
+  
+      <label>
+        End Time
+        <input type="time" [(ngModel)]="endTime" name="endTime" required (input)="validateTime()">
+        <span class="error-message">{{ timeError }}</span>
+      </label>
+  
+      <label>
+        Hourly Wage ($)
+        <input type="number" step="0.01" [(ngModel)]="hourlyWage" name="hourlyWage" required>
+        <span class="error-message">{{ wageError }}</span>
+      </label>
+  
+      <label>
+        Workplace
+        <select [(ngModel)]="place" name="place" required (change)="placeError = ''">
+          <option value="">Select…</option>
+          <option>Office</option>
+          <option>Warehouse</option>
+          <option>Remote</option>
+        </select>
+        <span class="error-message">{{ placeError }}</span>
+      </label>
+  
+      <label>
+        Shift Slug (unique)
+        <input type="text" [(ngModel)]="slug" name="slug" required (input)="validateSlug()">
+        <span class="error-message">{{ slugError }}</span>
+      </label>
+  
+      <label>
+        Comments
+        <textarea [(ngModel)]="comments" name="comments" rows="3"></textarea>
+      </label>
+  
+      <button type="submit">{{ isEditMode ? 'Update Shift' : 'Save Shift' }}</button>
+      <button type="button" (click)="cancel()">Cancel</button>
+    </form>
+  </div>
+  
+  <!-- Spinner -->
+  <div class="spinner-overlay" *ngIf="showSpinner">
+    <div class="spinner"></div>
+  </div>
+  
