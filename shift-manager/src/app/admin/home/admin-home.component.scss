@@ -134,6 +134,15 @@ header nav ul li a.active {
   border-radius: 4px;
 }
 
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
 
 .error-message {
   color: red;
