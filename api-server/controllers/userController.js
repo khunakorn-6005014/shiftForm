@@ -1,7 +1,21 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user.js');
-const { signToken } = require('../utils/auth.js');
+const { signToken, isAdmin } = require('../utils/auth.js');
 
+// Get All Users ( for admin )
+exports.getAllUsers = async (req, res) => {
+  try {
+    if (!isAdmin({user:req.user})) {
+      return res.status(403).json({ message: 'Access denied: Admins only.' });
+    }
+
+    const users = await User.find({}, '-password');
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+// Get User by Id
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;

@@ -4,4 +4,8 @@ const signToken = ({ _id, secret, expireTime }) => {
   return jwt.sign({ _id }, secret, { expiresIn: expireTime });
 };
 
-module.exports = { signToken };
+const isAdmin = ({ user }) => {
+  return user && user.isAdmin;
+};
+
+module.exports = { signToken, isAdmin };
