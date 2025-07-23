@@ -20,7 +20,7 @@ export class EditProfileComponent implements OnInit {
 
   currentUser: any = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(private fb: FormBuilder, private router: Router) { }
 
   ngOnInit(): void {
     const today = new Date();
@@ -38,8 +38,8 @@ export class EditProfileComponent implements OnInit {
     this.editForm = this.fb.group({
       email: [this.currentUser.email, [Validators.required, Validators.email]],
       username: [{ value: this.currentUser.username, disabled: true }],
-      password: [this.currentUser.password, [Validators.required, Validators.minLength(6)]],
-      verifyPassword: [this.currentUser.password, [Validators.required]],
+      password: [null],
+      verifyPassword: [null],
       firstName: [this.currentUser.firstName, [Validators.required, Validators.minLength(2)]],
       lastName: [this.currentUser.lastName, [Validators.required, Validators.minLength(2)]],
       birthday: [this.currentUser.birthday, [Validators.required]],
@@ -49,7 +49,7 @@ export class EditProfileComponent implements OnInit {
   onSubmit(): void {
     this.showSpinner = true;
 
-    const {
+    let {
       email,
       password,
       verifyPassword,
@@ -58,20 +58,26 @@ export class EditProfileComponent implements OnInit {
       birthday
     } = this.editForm.getRawValue();
 
-    const passwordValid = password.length >= 6 && /\d/.test(password);
-    const passwordsMatch = password === verifyPassword;
     const ageValid = this.checkAgeRange(birthday, 18, 65);
 
-    if (!passwordValid) {
-      this.errorMessage = 'Password must be at least 6 characters and include a number.';
-      this.showSpinner = false;
-      return;
-    }
+    if (password && verifyPassword) {
 
-    if (!passwordsMatch) {
-      this.errorMessage = 'Passwords do not match.';
-      this.showSpinner = false;
-      return;
+      const passwordValid = password.length >= 6 && /\d/.test(password);
+      const passwordsMatch = password === verifyPassword;
+
+      if (!passwordValid) {
+        this.errorMessage = 'Password must be at least 6 characters and include a number.';
+        this.showSpinner = false;
+        return;
+      }
+
+      if (!passwordsMatch) {
+        this.errorMessage = 'Passwords do not match.';
+        this.showSpinner = false;
+        return;
+      }
+    } else {
+      password = this.currentUser.password;
     }
 
     if (!ageValid) {
