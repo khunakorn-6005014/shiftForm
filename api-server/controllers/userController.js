@@ -1,6 +1,33 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user.js');
+const { signToken } = require('../utils/auth.js');
 
+// Login
+exports.login = async (req, res) => {
+  try {
+    const { userId, password } = req.body;
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(403).json({ message: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(403).json({ message: 'Invalid password' });
+    }
+
+    const token = signToken({
+      _id: user._id,
+      secret: process.env.JWT_SECRET,
+      expireTime: process.env.JWT_EXPIRE || '1d'
+    });
+
+    res.status(200).json({ token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 // Create User
 exports.createUser = async (req, res) => {
