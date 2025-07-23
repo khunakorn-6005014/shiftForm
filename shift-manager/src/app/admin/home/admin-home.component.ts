@@ -55,6 +55,9 @@ goToShifts() {
 goToWorkers() {
   this.router.navigate(['/admin/workers']);
 }
+onRowClick(s: Shift) {
+    this.router.navigate(['/admin/shiftFormAd'], { queryParams: { slug: s.slug } });
+  }
 
 
   logout()       { 
