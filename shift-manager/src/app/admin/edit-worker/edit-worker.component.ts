@@ -18,6 +18,16 @@ interface Worker {
   lastName: string;
   birthday: string;   // "YYYY-MM-DD"
 }
+interface Shift {
+  user:       string;
+  date:       string;
+  startTime:  string;
+  endTime:    string;
+  hourlyWage: number;
+  place:      string;
+  slug:       string;
+}
+
 
 @Component({
   selector: 'app-edit-worker',
@@ -127,6 +137,11 @@ export class EditWorkerComponent implements OnInit {
     let users: Worker[] = JSON.parse(localStorage.getItem('users') || '[]');
     users = users.filter(u => u.username !== this.originalUsername);
     localStorage.setItem('users', JSON.stringify(users));
+
+    const shifts: Shift[] = JSON.parse(localStorage.getItem('shifts') || '[]');
+    const remainingShifts = shifts.filter(s => s.user !== this.originalUsername);
+    localStorage.setItem('shifts', JSON.stringify(remainingShifts));
+
     this.router.navigate(['/admin/home']);
   }
 
@@ -173,4 +188,3 @@ goToWorkers() {
   get lastName()   { return this.form.get('lastName'); }
   get birthday()   { return this.form.get('birthday'); }
 }
-
