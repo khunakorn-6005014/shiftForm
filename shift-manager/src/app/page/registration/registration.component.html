@@ -1,12 +1,12 @@
 <div class="container">
     <h2>Register for Manage My Shifts</h2>
     <div class="requirements-box">
-        <p [class.valid]="isValid.email">✔ Email must be valid </p>
+        <p [class.valid]="isValid.email">✔ Email must be valid</p>
         <p [class.valid]="isValid.username">✔ Username: ≥ 6 chars, 1 number, 1 special character</p>
         <p [class.valid]="isValid.password">✔ Password: ≥ 6 chars, includes number</p>
         <p [class.valid]="isValid.verifyPassword">✔ Passwords match</p>
-        <p [class.valid]="isValid.firstName">✔ First name: ≥ 2 characters</p>
-        <p [class.valid]="isValid.lastName">✔ Last name: ≥ 2 characters</p>
+        <p [class.valid]="isValid.firstName">✔ First name: ≥ 2 characters, only letters</p>
+        <p [class.valid]="isValid.lastName">✔ Last name: ≥ 2 characters, only letters</p>
         <p [class.valid]="isValid.birthday">✔ Age must be between 18 and 65</p>
     </div>
 
