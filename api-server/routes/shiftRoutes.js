@@ -1,6 +1,6 @@
 // src/routes/shiftRoutes.js
-import express from "express"
-import {getAllShifts,addShift,updateShiftById,deleteShift,getShiftById} from "../controllers/shiftController.js"
+const express = require('express');
+const {getAllShifts,addShift,updateShiftById,deleteShift,getShiftById} = require('../controllers/shiftController');
 const { protect } = require('../middlewares/authMiddleware');
 const router       = express.Router();
 // Public endpoints

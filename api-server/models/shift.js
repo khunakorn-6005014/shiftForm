@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const shiftSchema = new mongoose.Schema({
   userId:      { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   date:       { type: Date,   required: true },
@@ -17,4 +17,4 @@ const shiftSchema = new mongoose.Schema({
   timestamps: true
 });
 
-export default mongoose.model('Shift', shiftSchema);
+module.exports = mongoose.model('Shift', shiftSchema);
