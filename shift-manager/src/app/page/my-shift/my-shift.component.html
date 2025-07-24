@@ -57,23 +57,24 @@
                 <thead>
                     <tr>
                         <th>Slug</th>
-                        <th>Date</th>
-                        <th>Start time</th>
-                        <th>End time</th>
+                        <th>Start</th>
+                        <th>End</th>
                         <th>Wage</th>
                         <th>Place</th>
                         <th>Profit</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let s of shifts">
                         <td>{{ s.slug }}</td>
-                        <td>{{ s.date }}</td>
-                        <td>{{ s.startTime }}</td>
-                        <td>{{ s.endTime }}</td>
+                        <td>{{ s.startDate }} {{ s.startTime }}</td>
+                        <td>{{ s.endDate }} {{ s.endTime }}</td>
                         <td>${{ s.hourlyWage }}</td>
                         <td>{{ s.place }}</td>
-                        <td>${{ calcProfit(s.startTime, s.endTime, s.hourlyWage).toFixed(2) }}</td>
+                        <td>
+                            ${{ calcProfit(s.startDate, s.startTime, s.endDate, s.endTime, s.hourlyWage).toFixed(2) }}
+                        </td>
                         <td>
                             <button (click)="editShift(s.slug); $event.stopPropagation()">Edit</button>
                             <button (click)="deleteShift(s.slug); $event.stopPropagation()">Delete</button>
@@ -82,6 +83,7 @@
                 </tbody>
             </table>
         </section>
+
 
         <!-- Summary -->
         <section class="summary">
