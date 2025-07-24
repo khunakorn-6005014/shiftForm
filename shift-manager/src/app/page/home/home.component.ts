@@ -20,26 +20,36 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const shifts = JSON.parse(localStorage.getItem('shifts') || '[]')
-      .filter((s: any) => s.user === this.loggedInUser);
+    const allShifts = this.loadShifts();
 
-    const today = new Date().toISOString().split('T')[0];
-    const dayOfWeek = new Date().getDay(); // 0 (Sun) ~ 6 (Sat)
+    const now = new Date();
     const startOfWeek = new Date();
-    startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Sunday
     const endOfToday = new Date();
 
-    const formatDate = (d: Date) => d.toISOString().split('T')[0];
+    // Parse string + time into real Date object
+    const toDateTime = (dateStr: string, timeStr: string): Date => {
+      return new Date(`${dateStr}T${timeStr}`);
+    };
 
-    this.upcomingShift = shifts
-      .filter((s: any) => s.date > today)
-      .sort((a: any, b: any) => a.date.localeCompare(b.date))[0] || null;
+    // Find upcoming shift
+    this.upcomingShift = allShifts
+      .filter((s: any) => toDateTime(s.startDate, s.startTime) > now)
+      .sort((a: any, b: any) => {
+        return toDateTime(a.startDate, a.startTime).getTime() - toDateTime(b.startDate, b.startTime).getTime();
+      })[0] || null;
 
-    this.pastShifts = shifts.filter((s: any) => {
-      return s.date < today &&
-        s.date >= formatDate(startOfWeek) &&
-        s.date <= formatDate(endOfToday);
-    }).sort((a: any, b: any) => b.date.localeCompare(a.date));
+    // Find past shifts in this week
+    this.pastShifts = allShifts
+      .filter((s: any) => {
+        const endDateTime = toDateTime(s.endDate || s.startDate, s.endTime);
+        return endDateTime < now &&
+          endDateTime >= startOfWeek &&
+          endDateTime <= endOfToday;
+      })
+      .sort((a: any, b: any) => {
+        return toDateTime(b.startDate, b.startTime).getTime() - toDateTime(a.startDate, a.startTime).getTime();
+      });
 
     this.calculateBestMonth();
   }
@@ -53,9 +63,7 @@ export class HomeComponent implements OnInit {
   loadShifts(): any[] {
     const json = localStorage.getItem('shifts');
     const allShifts = json ? JSON.parse(json) : [];
-  
-    const loggedInUser = localStorage.getItem('loggedInUser');
-    return allShifts.filter((shift: any) => shift.user === loggedInUser);
+    return allShifts.filter((shift: any) => shift.user === this.loggedInUser);
   }
 
   calcProfit(start: string, end: string, wage: number): number {
@@ -69,7 +77,7 @@ export class HomeComponent implements OnInit {
   calculateBestMonth(): void {
     const earnings: Record<string, number> = {};
     this.shifts.forEach(s => {
-      const key = s.date.slice(0, 7); // YYYY-MM
+      const key = (s.startDate || '').slice(0, 7); // YYYY-MM
       earnings[key] = (earnings[key] || 0) + this.calcProfit(s.startTime, s.endTime, s.hourlyWage);
     });
 
