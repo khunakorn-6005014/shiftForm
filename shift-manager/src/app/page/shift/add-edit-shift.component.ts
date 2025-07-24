@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environment';  
 
 @Component({
   selector: 'app-shift-form',
@@ -11,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './add-edit-shift.component.scss'
 })
 export class ShiftFormComponent implements OnInit {
-  STORAGE_KEY = 'shifts';
+  STORAGE_KEY = environment.STORAGE_KEY;
 
   loggedInUser: string | null = localStorage.getItem('loggedInUser');
   startDate = '';
