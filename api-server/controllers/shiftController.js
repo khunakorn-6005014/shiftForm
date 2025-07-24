@@ -1,12 +1,18 @@
 // src/controllers/shiftController.js
-import Shift from'../models/shift.js';
-import asyncHandler from 'express-async-handler';
+//import Shift from'../models/shift.js';
+// import asyncHandler from 'express-async-handler';
+const  Shift = require('../models/shift.js');
+const asyncHandler = require('express-async-handler');
+const { isAdmin }  = require('../utils/auth.js');
 
-//import { v4 as uuidv4 } from 'uuid';
 // GET /api/shifts
-export const getAllShifts = asyncHandler(async (req, res) => {
+exports.getAllShifts = asyncHandler(async (req, res) => {
   try {
     const currentUser = req.user;
+    if (!currentUser) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+
     if (!isAdmin({ user: currentUser })) {
        return res.status(403).json({ message: 'Access denied. Admins only.' });
     }
@@ -18,18 +24,18 @@ export const getAllShifts = asyncHandler(async (req, res) => {
 });
 
 // GET /api/shifts/:id
-export const getShiftById = asyncHandler(async (req, res) => {
+exports.getShiftById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const shift = await Shift.findById(id);
     
     const currentUser = req.user;
-    if (currentUser._id.toString() !== shift.userId.toString() ) {
-          return res.status(403).json({ message: 'Access denied. Not authorized.' });
-        }
     if (!shift) return res.status(404).json({ 
         message: 'Not found' 
     });
+    if (currentUser._id.toString() !== shift.userId.toString() ) {
+          return res.status(403).json({ message: 'Access denied. Not authorized.' });
+        }
     res.status(200).json(shift);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -37,7 +43,7 @@ export const getShiftById = asyncHandler(async (req, res) => {
 });
 
 // POST /api/shifts
-export const addShift = asyncHandler(async (req, res) => {
+exports.addShift = asyncHandler(async (req, res) => {
   try {
 
     const {date,startTime,endTime,hourlyWage,place,slug, comments = ''} = req.body;
@@ -72,7 +78,7 @@ export const addShift = asyncHandler(async (req, res) => {
 });
 
 // PATCH /api/shifts/:id
-export const updateShiftById = asyncHandler(async (req, res) => {
+exports.updateShiftById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const currentUser = req.user;
@@ -97,7 +103,7 @@ export const updateShiftById = asyncHandler(async (req, res) => {
 });
 
 // DELETE /api/shifts/:id  (admin only)
-export const deleteShift = asyncHandler(async (req, res) => {
+exports.deleteShift = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const currentUser = req.user;

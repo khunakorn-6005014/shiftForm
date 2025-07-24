@@ -1,8 +1,12 @@
 // src/routes/shiftRoutes.js
-import express from "express"
-import {getAllShifts,addShift,updateShiftById,deleteShift,getShiftById} from "../controllers/shiftController.js"
+// import express from "express"
+// import {getAllShifts,addShift,updateShiftById,deleteShift,getShiftById} from "../controllers/shiftController.js"
+// const router       = express.Router();
+const express = require('express');
+const router = express.Router();
+const {getAllShifts,addShift,updateShiftById,deleteShift,getShiftById} = require('../controllers/shiftController.js');
 const { protect } = require('../middlewares/authMiddleware');
-const router       = express.Router();
+
 // Public endpoints
 router.get('/', protect,  getAllShifts);
 router.get('/:id', protect,  getShiftById);
