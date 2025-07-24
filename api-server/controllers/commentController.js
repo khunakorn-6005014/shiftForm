@@ -1,7 +1,22 @@
 const Comment = require('../models/comment.js');
+const { isAdmin } = require('../utils/auth.js');
+
+// Get All Comments ( for admin )
+exports.getAllComments = async (req, res) => {
+  try {
+    if (!isAdmin({user:req.user})) {
+      return res.status(403).json({ message: 'Access denied: Admins only.' });
+    }
+
+    const comments = await Comment.find({});
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
 
 // Get Comment by Id
-const getCommentById = async (req, res) => {
+exports.getCommentById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -19,7 +34,7 @@ const getCommentById = async (req, res) => {
 };
 
 // Create Comment
-const createComment = async (req, res) => {
+exports.createComment = async (req, res) => {
     try {
         const { description } = req.body.comment;
         const user = req.body.user;
@@ -38,9 +53,4 @@ const createComment = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Failed to create comment', details: err.message });
     }
-};
-
-module.exports = { 
-    createComment, 
-    getCommentById
 };
