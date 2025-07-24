@@ -1,6 +1,22 @@
 const Comment = require('../models/comment.js');
 const { isAdmin } = require('../utils/auth.js');
 
+// Get All User's comments
+exports.getAllUserComments = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required.' });
+    }
+
+    const comments = await Comment.find({ userId }).sort({ createdAt: -1 });
+    res.status(200).json(comments);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get user comments', details: err.message });
+  }
+};
+
 // Get All Comments ( for admin )
 exports.getAllComments = async (req, res) => {
   try {
