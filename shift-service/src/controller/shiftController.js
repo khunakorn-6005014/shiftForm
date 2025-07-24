@@ -1,5 +1,5 @@
 // src/controllers/shiftController.js
-import Shift from'../models/shift';
+import Shift from'../models/shift.js';
 import asyncHandler from 'express-async-handler';
 //import { v4 as uuidv4 } from 'uuid';
 // GET /api/shifts
@@ -15,7 +15,7 @@ export const getAllShifts = asyncHandler(async (req, res) => {
 // GET /api/shifts/:id
 export const getShiftById = asyncHandler(async (req, res) => {
   try {
-    const shift = await Shift.findOne(req.params.id);
+    const shift = await Shift.findOne({ _id: req.params.id });
     if (!shift) return res.status(404).json({ message: 'Not found' });
     res.json(shift);
   } catch (err) {
@@ -39,7 +39,8 @@ if (!validPlaces.includes(place)) {
 }
 
     const Newshift = await Shift.create({
-     user: req.user.id,   // or wherever you store user
+     user: req.body.user
+,   // or wherever you store user
       date,
       startTime,
       endTime,
@@ -62,7 +63,7 @@ if (!validPlaces.includes(place)) {
 export const updateShiftById = asyncHandler(async (req, res) => {
   try {
     const shift = await Shift.findOneAndUpdate(
-      req.params.id,
+       { _id: req.params.id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -81,7 +82,7 @@ export const updateShiftById = asyncHandler(async (req, res) => {
 // DELETE /api/shifts/:id  (admin only)
 export const deleteShift = asyncHandler(async (req, res) => {
   try {
-    const shift = await Shift.findOneAndDelete(req.params.id);
+    const shift = await Shift.findOneAndDelete({ _id: req.params.id });
     if (!shift) return res.status(404).json({ message: 'Not found' });
     res.json({
      success: true,
