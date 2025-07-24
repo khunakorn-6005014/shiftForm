@@ -1,6 +1,33 @@
 const Comment = require('../models/comment.js');
 const { isAdmin } = require('../utils/auth.js');
 
+exports.updateCommentById = async (req, res) => {
+  try {
+    const { _id, comment } = req.body;
+
+    if (!_id || !comment || !comment.description) {
+      return res.status(400).json({ error: 'Missing required fields: _id or comment.description' });
+    }
+
+    const updated = await Comment.findByIdAndUpdate(
+      _id,
+      {
+        description: comment.description,
+        updatedAt: new Date()
+      },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Comment not found.' });
+    }
+
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update comment', details: err.message });
+  }
+};
+
 // Get All User's comments
 exports.getAllUserComments = async (req, res) => {
   try {
