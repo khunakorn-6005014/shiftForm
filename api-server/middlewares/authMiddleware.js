@@ -5,7 +5,7 @@ const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Not authorized, no token' });
+    return res.status(401).json({ message: 'Access Denied' });
   }
 
   try {
@@ -15,7 +15,7 @@ const protect = async (req, res, next) => {
     req.user = await User.findById(decoded._id).select('-password');
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Not authorized, token failed' });
+    res.status(401).json({ message: 'Access Denied' });
   }
 };
 
