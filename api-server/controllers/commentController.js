@@ -1,6 +1,28 @@
 const Comment = require('../models/comment.js');
 const { isAdmin } = require('../utils/auth.js');
 
+exports.deleteComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUser = req.user;
+
+    if (!isAdmin({ user: currentUser })) {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+
+    const deletedComment = await Comment.findByIdAndDelete(id);
+
+    if (!deletedComment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    res.status(200).json({ message: 'Comment deleted successfully', comment: deletedComment });
+  } catch (err) {
+    console.error('Error deleting comment:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 exports.updateCommentById = async (req, res) => {
   try {
     const { _id, comment } = req.body;
