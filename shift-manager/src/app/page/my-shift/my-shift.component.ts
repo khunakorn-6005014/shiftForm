@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
@@ -20,6 +20,7 @@ export class MyShiftComponent implements OnInit {
   loggedInUser: string | null = localStorage.getItem('loggedInUser');
   placeFilter: string = '';
 
+  constructor(private router: Router) {}
 
   ngOnInit() {
     const loggedIn = localStorage.getItem('loggedInUser');
@@ -28,8 +29,6 @@ export class MyShiftComponent implements OnInit {
     }
     this.applyFilters();
   }
-
-  constructor(private router: Router) {}
 
   logout() {
     localStorage.removeItem('loggedInUser');
@@ -42,17 +41,17 @@ export class MyShiftComponent implements OnInit {
     return json ? JSON.parse(json) : [];
   }
 
-  calcProfit(start: string, end: string, wage: number): number {
-    const [h1, m1] = start.split(':').map(Number);
-    const [h2, m2] = end.split(':').map(Number);
-    let diff = (h2 + m2 / 60) - (h1 + m1 / 60);
-    if (diff < 0) diff += 24;
-    return diff * wage;
+  calcProfit(startDate: string, startTime: string, endDate: string, endTime: string, wage: number): number {
+    const start = new Date(`${startDate}T${startTime}`);
+    const end = new Date(`${endDate}T${endTime}`);
+    const diffHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+    return Math.max(0, diffHours) * wage;
   }
+
   editShift(slug: string): void {
     this.router.navigate(['/shiftForm'], { queryParams: { slug } });
   }
-  
+
   deleteShift(slug: string): void {
     if (!confirm('Delete this shift?')) return;
     const shifts = this.allShifts.filter(s => s.slug !== slug);
@@ -65,11 +64,11 @@ export class MyShiftComponent implements OnInit {
       this.shifts = [];
       return;
     }
-  
+
     this.allShifts = this.loadShifts();
-  
+
     let shifts = this.allShifts.filter(s => s.user === this.loggedInUser);
-  
+
     if (this.placeFilter) {
       shifts = shifts.filter(s => s.place === this.placeFilter);
     }
@@ -78,21 +77,20 @@ export class MyShiftComponent implements OnInit {
       const slug = this.slugFilter.trim().toLowerCase();
       shifts = shifts.filter(s => s.slug.toLowerCase().includes(slug));
     }
-  
+
     if (this.fromDate) {
-      shifts = shifts.filter(s => s.date >= this.fromDate);
+      shifts = shifts.filter(s => s.startDate >= this.fromDate);
     }
-  
+
     if (this.toDate) {
-      shifts = shifts.filter(s => s.date <= this.toDate);
+      shifts = shifts.filter(s => s.endDate <= this.toDate);
     }
-  
-    shifts.sort((a, b) => a.date.localeCompare(b.date));
-  
+
+    shifts.sort((a, b) => a.startDate.localeCompare(b.startDate));
+
     this.shifts = shifts;
     this.calculateBestMonth();
   }
-  
 
   clearFilters(): void {
     this.placeFilter = '';
@@ -105,8 +103,9 @@ export class MyShiftComponent implements OnInit {
   calculateBestMonth(): void {
     const earnings: Record<string, number> = {};
     this.shifts.forEach(s => {
-      const key = s.date.slice(0, 7); // YYYY-MM
-      earnings[key] = (earnings[key] || 0) + this.calcProfit(s.startTime, s.endTime, s.hourlyWage);
+      const key = s.startDate.slice(0, 7); // YYYY-MM
+      const profit = this.calcProfit(s.startDate, s.startTime, s.endDate, s.endTime, s.hourlyWage);
+      earnings[key] = (earnings[key] || 0) + profit;
     });
 
     let best: { month: string | null; total: number } = { month: null, total: 0 };

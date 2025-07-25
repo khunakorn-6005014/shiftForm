@@ -21,46 +21,68 @@
     <h1>Welcome to Your admin Dashboard</h1>
     <p>Select an option from the menu to begin.</p>
 
-    <section class="card worker-of-month">
-      <h3>Worker of Last Month</h3>
+<section class="card worker-of-month">
+  <h3>Worker of Last Month</h3>
+<div class="shifts-table">
+  <table class="worker-month-table">
+    <thead>
+      <tr>
+        <th>Worker Name</th>
+        <th>Shift Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="topWorkerCount; else noDataRow">
+        <td>{{ topWorkerName }}</td>
+        <td>{{ topWorkerCount }}</td>
+      </tr>
+      <ng-template #noDataRow>
+        <tr>
+          <td colspan="2" class="no-data">
+            No shifts recorded last month.
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </table></div>
+</section>
+
+  <section class="card weekly-shifts">
+    <h3>Shifts in the Past Week</h3>
+    <div class="shifts-table">
+    <table *ngIf="weeklyShifts.length; else noneWeek">
       <thead>
         <tr>
-          <th>WorkerName |</th>
-          <th>Count</th>
+          <th>Date</th>
+          <th>Worker</th>
+          <th>Start Time</th>
+        <th>End Time</th>
+        <th>Price/Hour</th>
+        <th>Place</th>
+          <th>Slug</th>
+          <th>Profit</th>
         </tr>
       </thead>
-      <p *ngIf="topWorkerCount; else noneLastMonth">
-        {{ topWorkerName }} — {{ topWorkerCount }} shifts
-      </p>
-      <ng-template #noneLastMonth>
-        <p>No shifts recorded last month.</p>
-      </ng-template>
-    </section>
-
-    <section class="card weekly-shifts">
-      <h3>Shifts in the Past Week</h3>
-      <table *ngIf="weeklyShifts.length; else noneWeek">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Worker</th>
-            <th>Slug</th>
-            <th>Profit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let s of weeklyShifts">
-            <td>{{ s.date }}</td>
-            <td>{{ s.user }}</td>
-            <td>{{ s.slug }}</td>
-            <td>{{ calcProfit(s) | number:'1.2-2' }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <ng-template #noneWeek>
-        <p>No shifts in the past 7 days.</p>
-      </ng-template>
-    </section>
+      <tbody>
+        <tr *ngFor="let s of weeklyShifts" (click)="onRowClick(s)"
+        class="clickable-row">
+          <td>{{ s.date }}</td>
+          <td>{{ s.user }}</td>
+          <td>{{ s.slug }}</td>
+          <td>{{ s.startTime }}</td>
+        <td>{{ s.endTime }}</td>
+        <td>{{ s.hourlyWage | currency }}</td>
+        <td>{{ s.place }}</td>
+          <td>{{ calcProfit(s) | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+    <ng-template #noneWeek>
+      <p>No shifts in the past 7 days.</p>
+    </ng-template>
+    
+  </section>
 
     <section class="card best-month">
       <h3>Best Month Summary</h3>

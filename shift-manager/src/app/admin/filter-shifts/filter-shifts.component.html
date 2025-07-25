@@ -55,7 +55,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let s of filteredShifts">
+        <tr *ngFor="let s of filteredShifts" (click)="onRowClick(s)"
+        class="clickable-row">
           <td>{{ s.user }}</td>
           <td>{{ s.date }}</td>
           <td>{{ s.startTime }}</td>

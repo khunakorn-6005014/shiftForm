@@ -40,8 +40,8 @@ export class EditProfileComponent implements OnInit {
       username: [{ value: this.currentUser.username, disabled: true }],
       password: [null],
       verifyPassword: [null],
-      firstName: [this.currentUser.firstName, [Validators.required, Validators.minLength(2)]],
-      lastName: [this.currentUser.lastName, [Validators.required, Validators.minLength(2)]],
+      firstName: [this.currentUser.firstName, [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z]+$/)]],
+      lastName: [this.currentUser.lastName, [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z]+$/)]],
       birthday: [this.currentUser.birthday, [Validators.required]],
     });
   }

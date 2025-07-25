@@ -39,8 +39,8 @@ export class RegistrationComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(6)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       verifyPassword: ['', [Validators.required]],
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      firstName: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z]+$/)]],
+      lastName: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-z]+$/)]],
       birthday: ['', [Validators.required]],
     });
 
@@ -64,8 +64,8 @@ export class RegistrationComponent implements OnInit {
 
       this.isValid.password = !!password && password.length >= 6 && /\d/.test(password);
       this.isValid.verifyPassword = password === verifyPassword && !!password && !!verifyPassword;
-      this.isValid.firstName = !!firstName && firstName.length >= 2;
-      this.isValid.lastName = !!lastName && lastName.length >= 2;
+      this.isValid.firstName = !!firstName && firstName.length >= 2 && /^[A-Za-z]+$/.test(firstName);
+      this.isValid.lastName = !!lastName && lastName.length >= 2 && /^[A-Za-z]+$/.test(lastName);
       this.isValid.birthday = !!birthday && this.checkAgeRange(birthday, 18, 65);
     });
   }
@@ -104,6 +104,13 @@ export class RegistrationComponent implements OnInit {
 
     if (!passwordsMatch) {
       this.errorMessage = 'Passwords do not match.';
+      this.showSpinner = false;
+      return;
+    }
+
+    const nameRegex = /^[A-Za-z]+$/;
+    if (!nameRegex.test(firstName) || !nameRegex.test(lastName)) {
+      this.errorMessage = 'First and Last names must contain only letters.';
       this.showSpinner = false;
       return;
     }

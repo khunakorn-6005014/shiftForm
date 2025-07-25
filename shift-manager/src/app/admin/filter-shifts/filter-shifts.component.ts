@@ -111,4 +111,7 @@ goToWorkers() {
     localStorage.removeItem('loginTimestamp');
     this.router.navigate(['/login']);
   }
+  onRowClick(s: Shift) {
+    this.router.navigate(['/admin/shiftFormAd'], { queryParams: { slug: s.slug } });
+  }
 }
