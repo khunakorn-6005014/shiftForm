@@ -1,5 +1,7 @@
 // src/routes/shiftRoutes.js
 const express = require('express');
+const router = express.Router();
+
 const {getAllShifts,addShift,updateShiftById,deleteShift,getShiftById} = require('../controllers/shiftController');
 const { protect } = require('../middlewares/authMiddleware');
 
