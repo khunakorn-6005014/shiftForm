@@ -1,9 +1,6 @@
 // src/controllers/shiftController.js
-//import Shift from'../models/shift.js';
-// import asyncHandler from 'express-async-handler';
-const  Shift = require('../models/shift.js');
+const Shift = require('../models/shift.js');
 const asyncHandler = require('express-async-handler');
-const { isAdmin }  = require('../utils/auth.js');
 
 // GET /api/shifts
 exports.getAllShifts = asyncHandler(async (req, res) => {
