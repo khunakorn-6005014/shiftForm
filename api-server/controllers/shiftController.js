@@ -1,6 +1,7 @@
 // src/controllers/shiftController.js
 const Shift = require('../models/shift.js');
 const asyncHandler = require('express-async-handler');
+const { isAdmin } = require('../utils/auth.js');
 
 // GET /api/shifts
 exports.getAllShifts = asyncHandler(async (req, res) => {
@@ -30,7 +31,7 @@ exports.getShiftById = asyncHandler(async (req, res) => {
     if (!shift) return res.status(404).json({ 
         message: 'Not found' 
     });
-    if (currentUser._id.toString() !== shift.userId.toString() ) {
+    if (currentUser._id.toString() !== shift.userId.toString() && currentUser.isAdmin !== true) {
           return res.status(403).json({ message: 'Access denied. Not authorized.' });
         }
     res.status(200).json(shift);
@@ -55,7 +56,7 @@ exports.addShift = asyncHandler(async (req, res) => {
 }
 
     const Newshift = await Shift.create({
-      user: req.user._id,   
+      userId: req.user._id.toString(),   
       date,
       startTime,
       endTime,
@@ -86,6 +87,7 @@ exports.updateShiftById = asyncHandler(async (req, res) => {
     if (currentUser._id.toString() !== shift.userId.toString() && currentUser.isAdmin !== true) {
       return res.status(403).json({ message: 'Access denied. Not authorized.' });
     }
+    console.log(updateData)
     const updated = await Shift.findByIdAndUpdate(id,updateData ,{ 
         new: true, 
         runValidators: true });
