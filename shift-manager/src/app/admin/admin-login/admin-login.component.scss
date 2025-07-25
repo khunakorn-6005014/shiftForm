@@ -20,3 +20,14 @@ input, button {
     margin-bottom: 10px;
     box-sizing: border-box;
 }
+
+button {
+    background: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}

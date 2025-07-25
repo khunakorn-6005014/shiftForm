@@ -29,7 +29,7 @@ export const routes: Routes = [
             { path: 'home', component: AdminHomeComponent },
             { path: 'filter', component: FilterShiftsComponent },
             { path: 'worker', component: EditWorkerComponent },
-            {path : 'shiftFormAd',component : AdminShiftFormComponent}
+            { path : 'shiftFormAd',component : AdminShiftFormComponent}
         ]
     },
     {

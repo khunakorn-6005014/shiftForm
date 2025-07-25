@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environment';  
 
 @Component({
   selector: 'app-shift-form',
@@ -10,11 +11,12 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './add-edit-shift.component.html',
   styleUrl: './add-edit-shift.component.scss'
 })
-export class ShiftFormComponent  implements OnInit {
-  STORAGE_KEY = 'shifts';
+export class ShiftFormComponent implements OnInit {
+  STORAGE_KEY = environment.STORAGE_KEY;
 
   loggedInUser: string | null = localStorage.getItem('loggedInUser');
-  date = '';
+  startDate = '';
+  endDate = '';
   startTime = '';
   endTime = '';
   hourlyWage: number | null = null;
@@ -34,26 +36,30 @@ export class ShiftFormComponent  implements OnInit {
 
   showSpinner = false;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     const slugParam = this.route.snapshot.queryParamMap.get('slug');
     const shifts = this.loadShifts();
 
     if (slugParam) {
-      const shift = shifts.find(s => s.slug === slugParam);
-      if (shift) {
-        this.isEditMode = true;
-        this.originalSlug = slugParam;
-        this.date = shift.date;
-        this.startTime = shift.startTime;
-        this.endTime = shift.endTime;
-        this.hourlyWage = +shift.hourlyWage;
-        this.place = shift.place;
-        this.slug = shift.slug;
-        this.comments = shift.comments;
-      }
-    }
+  const shift = shifts.find(s => s.slug === slugParam);
+  if (shift) {
+    this.isEditMode = true;
+    this.originalSlug = slugParam;
+
+    this.startDate = shift.startDate || '';  // 기본값 fallback
+    this.endDate = shift.endDate || '';
+    this.startTime = shift.startTime;
+    this.endTime = shift.endTime;
+
+    this.hourlyWage = +shift.hourlyWage;
+    this.place = shift.place;
+    this.slug = shift.slug;
+    this.comments = shift.comments;
+  }
+}
+
   }
 
   loadShifts(): any[] {
@@ -66,11 +72,15 @@ export class ShiftFormComponent  implements OnInit {
   }
 
   validateTime(): void {
-    this.timeError = '';
-    if (this.startTime && this.endTime && this.endTime <= this.startTime) {
-      this.timeError = 'End must be after start.';
+  this.timeError = '';
+  if (this.startDate && this.endDate && this.startTime && this.endTime) {
+    const start = new Date(`${this.startDate}T${this.startTime}`);
+    const end = new Date(`${this.endDate}T${this.endTime}`);
+    if (start >= end) {
+      this.timeError = 'End time must be after start time.';
     }
   }
+}
 
   validateSlug(): void {
     const shifts = this.loadShifts();
@@ -80,7 +90,6 @@ export class ShiftFormComponent  implements OnInit {
   }
 
   onSubmit(): void {
-    this.dateError = this.date ? '' : 'Please select a date.';
     this.validateTime();
     this.wageError = !this.hourlyWage || this.hourlyWage <= 0 ? 'Hourly wage must be > 0.' : '';
     this.placeError = this.place ? '' : 'Select a workplace.';
@@ -91,15 +100,16 @@ export class ShiftFormComponent  implements OnInit {
     }
 
     const shift = {
-      user: this.loggedInUser,
-      date: this.date,
-      startTime: this.startTime,
-      endTime: this.endTime,
-      hourlyWage: this.hourlyWage,
-      place: this.place,
-      slug: this.slug.trim(),
-      comments: this.comments.trim()
-    };
+  user: this.loggedInUser,
+  startDate: this.startDate,
+  endDate: this.endDate,
+  startTime: this.startTime,
+  endTime: this.endTime,
+  hourlyWage: this.hourlyWage,
+  place: this.place,
+  slug: this.slug.trim(),
+  comments: this.comments.trim()
+};
 
     this.showSpinner = true;
 
