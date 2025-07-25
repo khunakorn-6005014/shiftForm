@@ -1,9 +1,19 @@
 <div id="main">
   <header>
     <div class="logo-container">
-      <img src="assets/logo.png" alt="App Logo" class="logo" />
+      <img src="logo.png" alt="App Logo" class="logo" />
     </div>
 
+    <nav>
+      <ul>
+        <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
+        <li><a routerLink="/myshift" routerLinkActive="active">My Shifts</a></li>
+        <li><a routerLink="/shiftForm" routerLinkActive="active">Add New Shift</a></li>
+        <li><a routerLink="/editProfile" routerLinkActive="active">Edit Profile</a></li>
+        <li><a href="#" (click)="logout()">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
     <nav>
       <ul>
         <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
@@ -45,7 +55,13 @@
   <section class="summary">
     <p>{{ bestMonth }}</p>
   </section>
+  <section class="summary">
+    <p>{{ bestMonth }}</p>
+  </section>
 
+  <footer>
+    <p>Author: kim and khuna</p>
+  </footer>
   <footer>
     <p>Author: kim and khuna</p>
   </footer>

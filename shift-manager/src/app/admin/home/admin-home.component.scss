@@ -11,10 +11,11 @@ body {
   margin: 50px auto;
   background: #fff;
   padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-input, button {
+input,
+button {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -35,19 +36,22 @@ button:hover {
 /* Sidebar styling */
 .sidebar {
   height: 100%;
-  width: 0;             /* hidden by default */
+  width: 0;
+  /* hidden by default */
   position: fixed;
   z-index: 1000;
   top: 0;
   left: 0;
   background-color: #111;
   overflow-x: hidden;
-  transition: width 0.3s ease;   /* animate width only */
+  transition: width 0.3s ease;
+  /* animate width only */
   padding-top: 60px;
 }
 
 .sidebar.open {
-  width: 250px;         /* shown when .open is present */
+  width: 250px;
+  /* shown when .open is present */
 }
 
 .sidebar a {
@@ -61,7 +65,7 @@ button:hover {
 
 .sidebar a:hover {
   color: #fff;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar .closebtn {
@@ -75,11 +79,14 @@ button:hover {
 /* Main content shift */
 #main {
   margin-left: 0;
-  transition: margin-left 0.3s ease;  /* animate margin only */
+  transition: margin-left 0.3s ease;
+  /* animate margin only */
 
 }
+
 #main.shifted {
-  margin-left: 250px;   /* pushed over when sidebar is open */
+  margin-left: 250px;
+  /* pushed over when sidebar is open */
 }
 
 /* Hamburger icon */
@@ -101,8 +108,9 @@ header {
   display: flex;
   align-items: center;
   padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  z-index: 500;  /* below sidebar (1000) but above content */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 500;
+  /* below sidebar (1000) but above content */
   transition: margin-left 0.3s ease;
 }
 
@@ -134,6 +142,15 @@ header nav ul li a.active {
   border-radius: 4px;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
 
 .error-message {
   color: red;
@@ -142,6 +159,7 @@ header nav ul li a.active {
   margin-bottom: 10px;
   display: block;
 }
+
 .notification-banner {
   position: fixed;
   bottom: 0;
@@ -177,21 +195,26 @@ header nav ul li a.active {
   align-items: flex-end;
 
 }
+
 .filter-item {
   flex: 1;
   min-width: 250px;
 }
+
 .filter-item label {
   display: block;
   margin-bottom: 5px;
   font-size: 0.9rem;
 }
+
 .input-wrapper {
   position: relative;
 }
+
 .filters input {
   flex: 1;
-  min-width: 250px; /* Adjust as necessary */
+  min-width: 250px;
+  /* Adjust as necessary */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -199,15 +222,17 @@ header nav ul li a.active {
   font-size: 1rem;
   box-sizing: border-box;
 }
+
 .filters input:focus {
   border-color: #007BFF;
-  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   outline: none;
 }
 
 .filters button {
   padding: 8px 12px;
 }
+
 .clear-field {
   position: absolute;
   right: 10px;
@@ -216,9 +241,11 @@ header nav ul li a.active {
   cursor: pointer;
   color: #666;
   font-size: 1.2rem;
-  display: none; /* will be toggled via JS */
+  display: none;
+  /* will be toggled via JS */
 }
-.input-wrapper input:not(:placeholder-shown) + .clear-field {
+
+.input-wrapper input:not(:placeholder-shown)+.clear-field {
   display: block;
 }
 
@@ -233,24 +260,30 @@ header nav ul li a.active {
   width: 100%;
   border-collapse: collapse;
 }
+
 .shifts-table th,
 .shifts-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
 }
+
 .shifts-table th {
   background: #f0f0f0;
 }
+
 #shiftsBody tr {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 #shiftsBody tr:hover {
   background: #f0f8ff;
 }
+
 #shiftsBody td:last-child {
-  cursor: default; /* keep buttons as normal */
+  cursor: default;
+  /* keep buttons as normal */
 }
 
 
@@ -260,25 +293,35 @@ header nav ul li a.active {
   font-weight: bold;
   text-align: right;
 }
+
 .spinner-overlay {
   position: fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: rgba(255,255,255,0.7);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
+
 .spinner {
   border: 6px solid #f3f3f3;
   border-top: 6px solid #007BFF;
   border-radius: 50%;
-  width: 40px; height: 40px;
+  width: 40px;
+  height: 40px;
   animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
-      to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+
 /*footer*/
 footer {
   text-align: center;
@@ -286,20 +329,32 @@ footer {
   background-color: rgb(8, 33, 223);
   color: white;
 }
+
 .dashboard {
-    padding: 2rem;
-    display: grid;
-    gap: 2rem;
-  }
-  
-  .card {
-    border: 1px solid #ccc;
-    padding: 1rem;
-    border-radius: 10px;
-    background-color: #fdfdfd;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .card h2 {
-    margin-top: 0;
-  }
+  padding: 2rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}

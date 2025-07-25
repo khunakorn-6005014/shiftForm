@@ -1,18 +1,18 @@
 <!-- src/app/admin/all-workers/all-workers.component.html -->
 
 <header class="admin-header">
-   <div class="logo-container">
-            <img src="assets/logo.png" alt="App Logo" class="logo" />
-        </div>
-   <nav>
+  <div class="logo-container">
+    <img src="logo.png" alt="App Logo" class="logo" />
+  </div>
+  <nav>
     <ul>
-               <li><a routerLink="/admin/home" routerLinkActive="active">Home</a></li>
-               <li><a (click)="goToShifts()">All Shifts</a></li>
-               <li><a routerLink="/admin/workers">All Workers</a></li>
+      <li><a routerLink="/admin/home" routerLinkActive="active">Home</a></li>
+      <li><a (click)="goToShifts()">All Shifts</a></li>
+      <li><a routerLink="/admin/workers">All Workers</a></li>
 
-               <span class="spacer"></span>
-               <li><a (click)="logout()">Logout</a></li>
-</ul>
+      <span class="spacer"></span>
+      <li><a (click)="logout()">Logout</a></li>
+    </ul>
   </nav>
 </header>
 
@@ -50,4 +50,3 @@
 <footer class="admin-footer">
   Author: kim and khuna
 </footer>
-
