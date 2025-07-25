@@ -2,7 +2,7 @@
 const express = require('express');
 const {getAllShifts,addShift,updateShiftById,deleteShift,getShiftById} = require('../controllers/shiftController');
 const { protect } = require('../middlewares/authMiddleware');
-const router       = express.Router();
+
 // Public endpoints
 router.get('/', protect,  getAllShifts);
 router.get('/:id', protect,  getShiftById);
