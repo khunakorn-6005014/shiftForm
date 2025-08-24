@@ -7,7 +7,12 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   birthDate: { type: Date, required: true },
-  isAdmin: { type: Boolean, default: false }
+  isAdmin: { type: Boolean, default: false },
+  permission: {
+    type:   mongoose.Schema.Types.ObjectId,
+    ref:    'Permission',
+    required: true
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);

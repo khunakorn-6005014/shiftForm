@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user.js');
 const { signToken, isAdmin } = require('../utils/auth.js');
 
+
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -121,9 +122,9 @@ exports.login = async (req, res) => {
 // Create User
 exports.createUser = async (req, res) => {
   try {
-    const { userId, email, password, confirmPass, firstName, lastName, birthDate, isAdmin } = req.body;
+    const { userId, email, password, confirmPass, firstName, lastName, birthDate, isAdmin,permissionId } = req.body;
 
-    if (!userId || !email || !password || !confirmPass || !firstName || !lastName || !birthDate) {
+    if (!userId || !email || !password || !confirmPass || !firstName || !lastName || !birthDate|| !permissionId) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
@@ -157,6 +158,7 @@ exports.createUser = async (req, res) => {
     if (age < 6 || age > 130) {
       return res.status(400).json({ error: 'Age must be between 6 and 130.' });
     }
+   
 
     const existing = await User.findOne({ userId });
     if (existing) {
